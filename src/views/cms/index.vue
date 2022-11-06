@@ -1,56 +1,46 @@
 <template>
   <el-container>
     <div class="background" :style="backgroundImage"></div>
-    <cmsNavBar></cmsNavBar>
+    <nav-bar></nav-bar>
     <keep-alive>
-      <cmsMain></cmsMain>
+      <cms-main></cms-main>
     </keep-alive>
     <el-footer height="40px">
-      <cmsFooter></cmsFooter>
+      <cms-footer></cms-footer>
     </el-footer>
   </el-container>
 </template>
 
-<script>
-import cmsMain from './main.vue'
-import cmsNavBar from './NavBar.vue'
-import cmsFooter from './Footer.vue'
+<script setup>
+
 // 引入背景图
 import backgroundImages from './backgroundImages.js'
-
-export default {
-  data() {
-    return {
-      backgroundImages,
-    }
-  },
-  methods: {
-    handleSelect(key, keyPath) {
-      console.log(key, keyPath)
-    },
-  },
-  components: {
-    cmsMain,
-    cmsNavBar,
-    cmsFooter,
-  },
-  computed: {
-    backgroundImage() {
+import {computed} from "vue";
+import CmsFooter from "@/views/cms/Footer";
+import CmsMain from "@/views/cms/cmsMain";
+import NavBar from "@/views/cms/NavBar";
+//
+const backgroundImage = computed(() => {
       // 根据背景图数组的长度随机选择索引
-      const randIndex = Math.floor(Math.random() * this.backgroundImages.length)
+      const randIndex = Math.floor(Math.random() * backgroundImages.length)
       return {
         // 获取对应的图片资源并将其设置到`background-image`属性上
-        backgroundImage: `url(${this.backgroundImages[randIndex]})`,
+        backgroundImage: `url(${backgroundImages[randIndex]})`,
       }
-    },
-  },
+    }
+)
+
+function handleSelect(key, keyPath) {
+  console.log(key, keyPath)
 }
+
 </script>
 
 <style scoped>
 .el-footer {
   background-color: rgba(84, 92, 100, 0.5);
 }
+
 .background {
   background-repeat: no-repeat;
   background-size: cover;
@@ -62,6 +52,7 @@ export default {
   position: fixed;
   z-index: -1;
 }
+
 @media screen and (max-width: 768px) {
   .title {
     width: 100%;

@@ -1,64 +1,55 @@
 <template>
   <el-header :style="'margin-bottom:' + headerBottom + 'px'">
     <h2 class="logo">
-      <svg-icon icon-class="EarOfWheat"/>
-      Blog
+<!--      <svg-icon icon-class="EarOfWheat"/>-->
+      inGamev
     </h2>
+
+
     <div class="bg-purple-light">
       <el-menu
           :default-active="activeIndex"
           router
+          ellipsis
           class="el-menu-demo"
           mode="horizontal"
           style="border: none"
           background-color="rgba(0,0,0,0)"
           text-color="#fff"
-          active-text-color="#ffd04b"
-      >
-        <el-menu-item index="/cms/main/cmsIndex"
-        ><i class="el-icon-s-home" style="color: rgba(255, 255, 255)"></i>首页
+          active-text-color="#ffd04b">
+        <el-menu-item index="/cms/main/cmsIndex">
+          首页
         </el-menu-item>
         <el-menu-item
             :index="item.path"
-            v-for="item in menulist"
-            :key="item.id"
-        >
-          <!--                图标-->
-          <i :class="item.icon" style="color: rgba(255, 255, 255)"></i>
-          <!--                文本-->
-          {{ item.authName }}
+            v-for="item in menuList"
+            :key="item.id">
+          {{ item.menuName }}
         </el-menu-item>
       </el-menu>
     </div>
+    <!--小屏菜单-->
     <div class="bg-purple-light el-menu-hidden" v-if="menuHiddenVisiable">
       <el-menu
           :default-active="activeIndex"
           router
           background-color="rgba(84,92,100,0.5)"
           text-color="#fff"
-          active-text-color="#ffd04b"
-      >
-        <el-menu-item index="/cms/main/cmsIndex" @click="menuAway"
-        ><i class="el-icon-s-home" style="color: rgba(255, 255, 255)"></i
-        >首页
-        </el-menu-item
-        >
+          active-text-color="#ffd04b">
+        <el-menu-item index="/cms/main/cmsIndex" @click="menuAway">首页 </el-menu-item>
         <el-menu-item
             :index="item.path"
-            v-for="item in menulist"
+            v-for="item in menuList"
             :key="item.id"
-            @click="menuAway"
-        >
-          <!--                图标-->
-          <i :class="item.icon" style="color: rgba(255, 255, 255)"></i>
-          <!--                文本-->
-          {{ item.authName }}
+            @click="menuAway">
+          {{ item.menuName }}
         </el-menu-item>
       </el-menu>
     </div>
 
+
     <div class="menu-expend" @click="menuExpend">
-      <i class="el-icon-menu" style="color: rgba(255, 255, 255)"></i>
+      <el-icon style="color: rgba(255, 255, 255)"><Menu /></el-icon>
     </div>
 
     <div v-if="searchInput" class="search_input">
@@ -68,240 +59,231 @@
           class="search"
           placeholder="搜索博客"
           prefix-icon="el-icon-search"
-          v-model:value="queryInfo.query"
-          size="mini"
-      >
+          v-model="queryInfo.queryKey">
       </el-input>
       <ul v-if="searching">
-        <li
-            class="animate__animated animate__fadeInDown search-blog"
+        <li class="animate__animated animate__fadeInDown search-blog"
             v-for="blog in searchList"
             :key="blog.id"
-            @click="getBlogInfo(blog.id)"
-        >
+            @click="getBlogInfo(blog.id)">
           <a><span v-html="blog.title"></span></a>
         </li>
       </ul>
     </div>
 
-    <div v-if="islogin" class="bg-purple">
-      <el-dropdown
-          class="avatar-container right-menu-item hover-effect"
-          trigger="click"
-      >
-        <div class="avatar-wrapper">
-          <el-avatar class="user-avatar" :src="avatar" @error="errorHandler">
-            <i class="el-icon-s-custom"/>
-          </el-avatar>
-          <p class="avatar-Name">{{ name }}</p>
-        </div>
-        <template v-slot:dropdown>
-          <el-dropdown-menu>
-            <router-link target="_blank" to="/index">
-              <el-dropdown-item>管理博客</el-dropdown-item>
-            </router-link>
-            <el-dropdown-item divided @click="logout">
-              <span>退出登录</span>
-            </el-dropdown-item>
-          </el-dropdown-menu>
-        </template>
-      </el-dropdown>
-    </div>
-    <div v-else class="bg-purple">
-      <div class="avatar-wrapper">
-        <!-- <el-avatar class="avatar" src="avatar" @error="errorHandler">
-              <i class="el-icon-s-custom" @click="tologin"/>
-            </el-avatar> -->
-        <p class="avatar-Name" @click="tologin">登录|注册</p>
-      </div>
-    </div>
+<!--    <div v-if="isLogin" class="bg-purple">-->
+<!--      <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">-->
+<!--        <div class="avatar-wrapper">-->
+<!--          <el-avatar class="user-avatar" :src="userStore.avatar" @error="errorHandler">-->
+<!--            <i class="el-icon-s-custom"/>-->
+<!--          </el-avatar>-->
+<!--          <p class="avatar-Name">{{ userStore.name }}</p>-->
+<!--        </div>-->
+<!--        <template v-slot:dropdown>-->
+<!--          <el-dropdown-menu>-->
+<!--            <router-link target="_blank" to="/index">-->
+<!--              <el-dropdown-item>管理博客</el-dropdown-item>-->
+<!--            </router-link>-->
+<!--            <el-dropdown-item divided @click="logout">-->
+<!--              <span>退出登录</span>-->
+<!--            </el-dropdown-item>-->
+<!--          </el-dropdown-menu>-->
+<!--        </template>-->
+<!--      </el-dropdown>-->
+<!--    </div>-->
+<!--    &lt;!&ndash;开放登录注册&ndash;&gt;-->
+<!--    <div v-else class="bg-purple">-->
+<!--      <div class="avatar-wrapper">-->
+<!--        <p class="avatar-Name" @click.prevent="toLogin">登录 | 注册</p>-->
+<!--      </div>-->
+<!--    </div>-->
   </el-header>
 </template>
 
-<script>
+<script setup>
 
 import {getToken} from '@/utils/auth'
 import {cmsListBlog} from '@/api/cms/blog'
+import useUserStore from "@/store/modules/user";
+import {ElMessageBox} from "element-plus";
+import {watch} from "vue";
 
-export default {
-  name: 'cmsNavBar',
-  data() {
-    return {
-      activeIndex: 'this.$router.path',
-      islogin: false,
-      searchInput: true,
-      menuHiddenVisiable: false,
-      headerBottom: 0,
-      queryInfo: {
-        query: '',
-        timer: null,
-      },
-      searchList: [],
-      searching: false,
-      menulist: [
-        {
-          id: 1,
-          authName: '随笔',
-          path: '/cms/main/essay',
-          icon: 'el-icon-edit',
-        },
-        {
-          id: 2,
-          authName: '留言',
-          path: '/cms/main/message',
-          icon: 'el-icon-chat-dot-round',
-        },
-        {
-          id: 3,
-          authName: '文档',
-          path: '/cms/doucument',
-          icon: 'el-icon-document',
-        },
-      ],
-      // 查询参数
-      queryParams: {
-        pageNum: 1,
-        pageSize: 10,
-        title: null,
-        type: 1,
-        content: null,
-        top: null,
-        views: null,
-        status: null,
-      },
-    }
-  },
-  watch: {
-    'queryInfo.query': {
-      deep: true,
+const router = useRouter();
+const userStore = useUserStore()
 
-      handler(value) {
-        if (this.timer) {
-          clearTimeout(this.timer)
-        }
-        this.timer = setTimeout(() => {
-          this.searchBlog()
-        }, 300)
-      },
-    },
+const activeIndex = ref('router.path')
+const isLogin = ref(false)
+const searchInput = ref(true)
+const menuHiddenVisiable = ref(false)
+const headerBottom = ref(0)
+
+const queryInfo = ref({
+  queryKey: "",
+})
+
+const searchList = ref([])
+const searching = ref(false)
+const menuList = [
+  {
+    id: 1,
+    menuName: '随笔',
+    path: '/cms/main/essay',
+    icon: 'el-icon-edit',
   },
-  created() {
-    this.login()
-    // this.ResponsiveLayout();
-  },
-  methods: {
-    menulistAdd() {
-      //push()方法一般是添加到数组的最后的位置；unshift()方法是往最前面的位置添加。
-      // this.menulist.push({id:"",authName:""})
-      this.menulist.unshift({
-        id: '',
-        authName: '',
-      })
-    },
-    //响应式布局
-    ResponsiveLayout() {
-      //浏览器窗口的内部高度
-      var w = window.innerWidth || document.body.clientWidth
-      //浏览器窗口的内部宽度
-      var h = window.innerHeight || document.body.clientHeight
-      console.log(w, h)
-    },
-    // 展开菜单栏
-    menuExpend() {
-      this.menuHiddenVisiable = !this.menuHiddenVisiable
-      if (this.menuHiddenVisiable === true) {
-        this.headerBottom = (this.menulist.length + 1) * 56
-      } else {
-        this.headerBottom = 0
-      }
-    },
-    //收起菜单
-    menuAway() {
-      this.menuHiddenVisiable = false
-      this.headerBottom = 0
-    },
-    notSearching() {
-      setTimeout(() => {
-        this.searching = false
-      }, 100)
-    },
-    checkInput() {
-      this.searching = this.queryInfo.query !== ''
-    },
-    tologin() {
-      this.$router.push({
-        path: '/cmsLogin',
-      })
-    },
-    login() {
-      let token = getToken()
-      if (token == null || token == '') {
-        this.islogin = false
-      } else {
-        this.islogin = true
-      }
-    },
-    errorHandler() {
-      return true
-    },
-    async searchBlog() {
-      if (this.queryInfo.query === '') {
-        this.searching = false
-        return
-      }
-      this.queryParams.title = this.queryInfo.query
-      cmsListBlog(this.queryParams).then((response) => {
-        let lsitSize = response.rows.length
-        if (lsitSize > 0) {
-          for (let i = 0; i < lsitSize; i++) {
-            let redTitle = this.brightenKeyword(
-                response.rows[i].title,
-                this.queryInfo.query
-            )
-            response.rows[i].title = redTitle
-          }
-        }
-        this.searchList = response.rows
-        if (this.searchList.length !== 0) {
-          this.searching = true
-        }
-      })
-    },
-    //搜索关建字标红
-    brightenKeyword(val, keyword) {
-      const Reg = new RegExp(keyword, 'i')
-      let res = ''
-      if (val) {
-        res = val.replace(Reg, `<span style="color: red;">${keyword}</span>`)
-        return res
-      }
-    },
-    // 跳转到博客详情页
-    getBlogInfo(blogId) {
-      let routeUrl = this.$router.resolve({
-        path: '/cms/main/blog',
-        query: {
-          id: blogId,
-        },
-      })
-      window.open(routeUrl.href, '_blank')
-    },
-    async logout() {
-      this.$confirm('确定注销并退出系统登录吗？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
-      })
-          .then(() => {
-            this.$store.dispatch('LogOut').then(() => {
-              location.href = '/cms/main/cmsIndex'
-            })
-          })
-          .catch(() => {
-          })
-    },
-  },
+  // {
+  //   id: 2,
+  //   menuName: '留言',
+  //   path: '/cms/main/message',
+  //   icon: 'el-icon-chat-dot-round',
+  // },
+  // {
+  //   id: 3,
+  //   menuName: '文档',
+  //   path: '/cms/doucument',
+  //   icon: 'el-icon-document',
+  // },
+]
+
+// 查询参数
+const queryParams = ref({
+  pageNum: 1,
+  pageSize: 10,
+  title: null,
+  type: 1,
+  content: null,
+  top: null,
+  views: null,
+  status: null,
+})
+
+
+function menuListAdd() {
+  //push()方法一般是添加到数组的最后的位置；unshift()方法是往最前面的位置添加。
+  // this.menulist.push({id:"",menuName:""})
+  menuList.value.unshift({
+    id: '',
+    menuName: '',
+  })
 }
+
+//响应式布局
+function ResponsiveLayout() {
+  //浏览器窗口的内部高度
+  var w = window.innerWidth || document.body.clientWidth
+  //浏览器窗口的内部宽度
+  var h = window.innerHeight || document.body.clientHeight
+  console.log(w, h)
+}
+
+// 展开菜单栏
+function menuExpend() {
+  menuHiddenVisiable.value = !menuHiddenVisiable.value
+  if (menuHiddenVisiable.value === true) {
+    headerBottom.value = (menuList.length + 1) * 56
+  } else {
+    headerBottom.value = 0
+  }
+}
+
+
+//收起菜单
+function menuAway() {
+  menuHiddenVisiable.value = false
+  headerBottom.value = 0
+}
+
+
+function notSearching() {
+  setTimeout(() => {
+    searching.value = false
+  }, 100)
+}
+
+function checkInput() {
+  searching.value = queryInfo.value.queryKey !== ''
+}
+
+function toLogin() {
+  router.push("/cmsLogin");
+}
+
+function checkLogin() {
+  isLogin.value = getToken();
+}
+
+
+function errorHandler() {
+  return true
+}
+
+
+async function searchBlog() {
+  if (queryInfo.value.queryKey === '') {
+    searching.value = false
+    return
+  }
+  queryParams.value.title = queryInfo.value.queryKey
+  cmsListBlog(queryParams.value).then((response) => {
+    let listSize = response.rows.length
+    if (listSize > 0) {
+      for (let i = 0; i < listSize; i++) {
+        let redTitle = brightenKeyword(
+            response.rows[i].title,
+            queryInfo.value.queryKey
+        )
+        response.rows[i].title = redTitle
+      }
+    }
+    searchList.value = response.rows
+    if (searchList.value.length !== 0) {
+      searching.value = true
+    }
+  })
+}
+
+//搜索关建字标红
+function brightenKeyword(val, keyword) {
+  const Reg = new RegExp(keyword, 'i')
+  let res = ''
+  if (val) {
+    res = val.replace(Reg, `<span style="color: red;">${keyword}</span>`)
+    return res
+  }
+}
+
+// 跳转到博客详情页
+function getBlogInfo(blogId) {
+  let routeUrl = router.resolve({
+    path: '/cms/main/blog',
+    query: {
+      id: blogId,
+    }
+  })
+  window.open(routeUrl.href, '_blank')
+}
+
+function logout() {
+  ElMessageBox.confirm('确定注销并退出系统吗？', '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(() => {
+    userStore.logOut().then(() => {
+      location.href = '/cms/main/cmsIndex'
+    })
+  }).catch(() => {
+  });
+}
+
+watch(
+    () => queryInfo.value.queryKey,
+    (value) => {
+      searchBlog()
+    }
+)
+
+checkLogin()
+
 </script>
 
 <style scoped>
@@ -322,19 +304,19 @@ export default {
   background-color: rgba(0, 0, 0, 0) !important;
 }
 
-.el-menu /deep/ .el-menu-item {
+.el-menu :deep .el-menu-item {
   background-color: rgba(0, 0, 0, 0) !important;
 }
 
-.el-menu /deep/ .el-menu-item i {
-  color: rgba(255, 255, 255);
+.el-menu :deep .el-menu-item i {
+  color: rgba(0, 0, 0, 0);
 }
 
-.el-menu /deep/ .el-menu-item:hover i {
-  color: white;
+.el-menu :deep .el-menu-item:hover i {
+  color: rgba(0, 0, 0, 0);
 }
 
-.el-menu /deep/ .el-menu-item:hover {
+.el-menu :deep .el-menu-item:hover {
   background-color: rgba(0, 0, 0, 0.5) !important;
 }
 
@@ -385,6 +367,8 @@ export default {
 }
 
 .bg-purple-light {
+  width: 100%;
+  align-content: center;
   float: right;
 }
 
@@ -395,9 +379,7 @@ export default {
 .user-avatar {
   float: left;
   cursor: pointer;
-  border: dashed rgba($
-  color: #ffff7f, $
-  alpha: 0.5);
+  /*border: dashed rgba($ color: #f6f683, $ alpha: 0.5);*/
 }
 
 .avatar-container {
@@ -441,14 +423,14 @@ export default {
   display: none !important;
 }
 
-@media screen and (max-width: 1000px) {
+@media screen and (max-width: 780px) {
   .search_input {
     display: none;
   }
 }
 
 @media screen and (max-width: 768px) {
-  .el-menu /deep/ .el-menu-item {
+  .el-menu :deep .el-menu-item {
     background-color: rgba(0, 0, 0, 0.3) !important;
   }
 

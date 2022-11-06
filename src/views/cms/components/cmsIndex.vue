@@ -2,23 +2,18 @@
   <el-row :gutter="20">
     <el-col :sm="2" class="hidden-xs-only" style="opacity: 0">左侧占位</el-col>
     <el-col :xs="24" :sm="15">
-      <el-card
-          style="background-color: rgba(255, 255, 255, 0.9)"
-          class="left-item"
-      >
-        <template v-slot:header>
+      <el-card style="background-color: rgba(255, 255, 255, 0.9)" class="left-item">
+        <template #header>
           <div class="total">
             <div class="title">
-              <i
-                  v-if="selected"
-                  class="el-icon-back"
-                  @click="updateBlogList"
-              ></i>
+              <el-icon v-if="selected" @click="updateBlogList">
+                <Back/>
+              </el-icon>
               <span>{{ selectMethod }}</span>
             </div>
-            <!-- <span>共 <span style="color: #3a8ee6; font-size: 20px">{{totalcount}}</span> 篇</span> -->
           </div>
         </template>
+
         <el-row
             type="flex"
             align="middle"
@@ -27,14 +22,9 @@
             v-for="blog in blogList"
             :key="blog.id"
             shadow="never"
-            class="blog-content"
-        >
+            class="blog-content">
           <el-col class="img" :xs="24" :sm="6">
-            <el-image
-                lazy
-                :src="blog.blogPic"
-                @click="getBlogInfo(blog.id)"
-            ></el-image>
+            <el-image lazy :src="blog.blogPic" @click="getBlogInfo(blog.id)"></el-image>
           </el-col>
           <el-col
               :xs="24"
@@ -44,8 +34,7 @@
               padding-right: 10px;
               margin-bottom: 5px;
               margin-top: -5px;
-            "
-          >
+            ">
             <div @click="getBlogInfo(blog.id)">
               <h3>
                 <svg-icon icon-class="Topping" v-show="blog.top == 1"/>
@@ -59,34 +48,30 @@
               <div style="margin-bottom: 10px">
                 <el-tag
                     effect="plain"
-                    size="mini"
                     v-for="tag in blog.tags"
                     :key="tag.tagId"
-                    type="success"
-                >
+                    type="success">
                   {{ tag.tagName }}
                 </el-tag>
               </div>
               <div class="blog-info">
-                <div class="user-info">
-                  <i class="el-icon-user"></i>
-                  <span class="header"> {{ blog.createBy }}</span>
-                </div>
+<!--                <div class="user-info">-->
+<!--                  <el-icon><User /></el-icon>-->
+<!--                  <span class="header"> {{ blog.createBy }}</span>-->
+<!--                </div>-->
                 <div class="blog-date">
-                  <i class="el-icon-date"></i>
+                  <el-icon><Calendar /></el-icon>
                   <span> {{ blog.createTime }}</span>
                 </div>
                 <div>
-                  <i class="el-icon-view"></i>
+                  <el-icon><View /></el-icon>
                   <span> {{ blog.views }}</span>
                 </div>
                 <div class="blog-type">
                   <el-tag
-                      size="mini"
                       v-for="tag in blog.types"
                       :key="tag.typeId"
-                      type="info"
-                  >
+                      type="info">
                     {{ tag.typeName }}
                   </el-tag>
                 </div>
@@ -94,6 +79,7 @@
             </div>
           </el-col>
         </el-row>
+
         <pagination
             v-show="total > 0"
             :total="total"
@@ -101,17 +87,15 @@
             v-model:limit="queryParams.pageSize"
             background
             layout="total, sizes, prev, pager, next, jumper"
-            @pagination="getBlogList"
-            style="margin-bottom: 30px; float: right; margin-right: 10px"
-        />
+            @pagination="getBlogList"/>
       </el-card>
+
     </el-col>
     <el-col :xs="24" :sm="5">
       <el-card
           style="background-color: rgba(255, 255, 255, 0.9)"
-          class="right-item"
-      >
-        <template v-slot:header>
+          class="right-item">
+        <template #header>
           <div class="attributes">
             <b>分类</b>
           </div>
@@ -122,22 +106,19 @@
               v-for="cmsType in typeList"
               :key="cmsType.typeId"
               @click="selectType(cmsType)"
-              :class="cmsType.typeId === typeId ? 'activeType' : ''"
-          >
+              :class="cmsType.typeId === typeId ? 'activeType' : ''">
             <div style="display: flex; align-items: center">
               <el-image
                   style="
                   width: 28px;
                   height: 28px;
                   border-radius: 50%;
-                  margin-right: 10px;
-                "
+                  margin-right: 10px;"
                   lazy
-                  :src="cmsType.typePic"
-              >
-                <template v-slot:error>
+                  :src="cmsType.typePic">
+                <template #error>
                   <div style="width: 28px; height: 28px; border-radius: 50%">
-                    <i class="el-icon-collection" style="margin-left: 6px"></i>
+                    <el-icon><Collection /></el-icon>
                   </div>
                 </template>
               </el-image>
@@ -147,15 +128,18 @@
           </li>
         </ul>
         <div class="more" @click="dealType">
-          <i v-if="moreType" class="el-icon-arrow-down"></i>
-          <i v-else class="el-icon-arrow-up"></i>
+          <el-icon v-if="moreType">
+            <More/>
+          </el-icon>
+          <el-icon v-else>
+            <ArrowUp/>
+          </el-icon>
         </div>
       </el-card>
       <el-card
           style="background-color: rgba(255, 255, 255, 0.9)"
-          class="right-item"
-      >
-        <template v-slot:header>
+          class="right-item">
+        <template #header>
           <div class="attributes">
             <b>标签</b>
           </div>
@@ -166,8 +150,7 @@
               v-for="tag in tagList"
               :key="tag.tagId"
               @click="selectTag(tag)"
-              :class="tag.tagId === tagId ? 'activeTag' : ''"
-          >
+              :class="tag.tagId === tagId ? 'activeTag' : ''">
             <div class="sjx-outer">
               <div class="sjx-inner"></div>
             </div>
@@ -178,15 +161,16 @@
           </div>
         </div>
         <div class="more" @click="dealTag">
-          <i v-if="moreTag" class="el-icon-arrow-down"></i>
-          <i v-else class="el-icon-arrow-up"></i>
+          <el-icon v-if="moreTag">
+            <More/>
+          </el-icon>
+          <el-icon v-else>
+            <ArrowUp/>
+          </el-icon>
         </div>
       </el-card>
-      <el-card
-          style="background-color: rgba(255, 255, 255, 0.9)"
-          class="right-item"
-      >
-        <template v-slot:header>
+      <el-card style="background-color: rgba(255, 255, 255, 0.9)" class="right-item">
+        <template #header>
           <div class="attributes">
             <b>最新推荐</b>
           </div>
@@ -195,8 +179,7 @@
             class="recommend-blog l-text"
             v-for="blog in recommendList"
             :key="blog.id"
-            @click="getBlogInfo(blog.id)"
-        >
+            @click="getBlogInfo(blog.id)">
           <a class="recommend-a">{{ blog.title }}</a>
         </div>
       </el-card>
@@ -205,7 +188,7 @@
   </el-row>
 </template>
 
-<script>
+<script setup>
 
 import {
   cmsListBlog,
@@ -214,239 +197,248 @@ import {
   cmsListByTagId,
   cmsListRecommend,
 } from '@/api/cms/blog'
-import {ElLoading} from 'element-plus'
+import {computed, nextTick, onMounted} from "vue";
 
-export default {
-  name: 'cmsIndex',
-  data() {
-    return {
-      totalcount: 100,
-      queryInfo: {
-        query: '',
-        pagenum: 1,
-        pagesize: 8,
+const {proxy} = getCurrentInstance();
+const router = useRouter();
+
+const queryInfo = ref({
+  query: '',
+  pagenum: 1,
+  pagesize: 8,
+})
+const intro = ref('1')
+const blogList = ref([])
+const typeList = ref([])
+const fullTypeList = ref([])
+const recommendList = ref([])
+const tagList = ref([])
+const fullTagList = ref([])
+const selectMethod = ref('全部博客')
+const typeId = ref(-1)
+const tagId = ref(-1)
+const selected = ref(false)
+const moreType = ref(true)
+const moreTag = ref(true)
+const value = ref(new Date())
+const timer = ref(false)
+const start = ref(false)
+//实时屏幕宽度
+const screenWidth = ref(document.documentElement.clientWidth)
+const queryParams = ref({
+  pageNum: 1,
+  pageSize: 10,
+  title: null,
+  type: 1,
+  content: null,
+  top: null,
+  views: null,
+  status: null,
+  createBy: null,
+})
+const total = ref(0)
+
+computed(
+    {
+      pagSmall() {
+        return this.screenWidth <= 768
       },
-      intro: '',
-      blogList: [],
-      typeList: [],
-      tagList: [],
-      fullTypeList: [],
-      fullTagList: [],
-      recommendList: [],
-      selectMethod: '全部博客',
-      typeId: -1,
-      tagId: -1,
-      selected: false,
-      moreType: true,
-      moreTag: true,
-      value: new Date(),
-      timer: null,
-      start: false,
-      screenWidth: document.documentElement.clientWidth, //实时屏幕宽度
-      // 查询参数
-      queryParams: {
-        pageNum: 1,
-        pageSize: 10,
-        title: null,
-        type: 1,
-        content: null,
-        top: null,
-        views: null,
-        status: null,
-        createBy: null,
-      },
-      // 总条数
-      total: 0,
-    }
-  },
-  computed: {
-    pagSmall() {
-      return this.screenWidth <= 768
-    },
-    // 计算分页栏样式
-    pagLayout() {
-      if (this.screenWidth < 768) {
-        return 'prev, pager, next'
-      } else {
-        return 'total, prev, pager, next, jumper'
+      // 计算分页栏样式
+      pagLayout: function () {
+        if (screenWidth.value < 768) {
+          return 'prev, pager, next'
+        } else {
+          return 'total, prev, pager, next, jumper'
+        }
       }
-    },
-  },
-  created() {
-    window.addEventListener('resize', this.screenAdapter)
-  },
-  mounted() {
-    this.$nextTick(function () {
+    }
+)
+
+onMounted(
+    nextTick(function () {
       // 仅在整个视图都被渲染之后才会运行的代码
-      this.getTypeList()
-      this.getBlogList()
-      this.getTagList()
-      this.getRecommendList()
-      let str =
-          '这是我的个人博客、会分享关于编程，开发以及其他方面的一些内容，希望可以对您有所帮助...'
+      getTypeList()
+      getBlogList()
+      getTagList()
+      getRecommendList()
+      let str = '这是我的个人博客、会分享关于编程，开发以及其他方面的一些内容，希望可以对您有所帮助...'
       let idx = 0
       let that = this
       let timer = setTimeout(function fn() {
-        // console.log(this.intro)
-        that.intro = that.intro + str.substring(idx, idx + 1)
+        intro.value = intro.value + str.substring(idx, idx + 1)
         idx++
         if (idx > str.length) {
-          that.intro = ''
+          intro.value = ''
           idx = 0
         }
         setTimeout(fn, 200)
       }, 2000)
 
-      this.screenWidth = document.documentElement.clientWidth
+      screenWidth.value = document.documentElement.clientWidth
     })
-  },
-  methods: {
-    /** 获取博客列表 */
-    getBlogList() {
-      let loadingInstance = ElLoading.service({
-        target: '.left-item',
-      })
-      cmsListBlog(this.queryParams).then((response) => {
-        this.blogList = this.picSrc(response.rows)
-        this.total = response.total
-        loadingInstance.close()
-      })
-    },
-    //首图地址修改
-    picSrc(blogList) {
-      for (let i = 0; i < blogList.length; i++) {
-        let blogInfo = blogList[i]
-        if (blogInfo.blogPic.length > 0) {
-          blogList[i].blogPic = process.env.VUE_APP_BASE_API + blogInfo.blogPic
-        } else {
-          blogList[i].blogPic = '/errorImg.jpg'
-        }
-      }
-      return blogList
-    },
-    // 开始进入主页
-    startRead() {
-      this.$nextTick(() => {
-        document.getElementById('index').scrollIntoView({
-          behavior: 'smooth',
-          block: 'start',
-          // inline: 'nearest'
-        })
-      })
-    },
-    compare(property) {
-      return function (a, b) {
-        let value1 = a[property].length
-        let value2 = b[property].length
-        return value2 - value1
-      }
-    },
-    // 获取推荐博客列表
-    async getRecommendList() {
-      cmsListRecommend(this.queryParams).then((response) => {
-        const {data: res} = response
-        this.recommendList = response.rows.slice(0, 4)
-        this.total = response.total
-      })
-    },
-    // 获取博客类型列表
-    async getTypeList() {
-      getBlogDetail(this.$route.query.id).then((response) => {
-        for (let i = 0; i < response.types.length; i++) {
-          let typeInfo = response.types[i]
-          if (typeInfo.typePic.length > 0) {
-            response.types[i].typePic =
-                process.env.VUE_APP_BASE_API + typeInfo.typePic
-          }
-        }
-        const {data: res} = response
-        this.fullTypeList = response.types
-        this.typeList = response.types.slice(0, 4)
-      })
-    },
-    // 获取博客标签列表
-    async getTagList() {
-      getBlogDetail(this.$route.query.id).then((response) => {
-        const {data: res} = response
-        this.fullTagList = response.tags
-        this.tagList = response.tags.slice(0, 6)
-      })
-    },
-    // 跳转到博客详情页
-    getBlogInfo(blogId) {
-      let routeUrl = this.$router.resolve({
-        path: '/cms/main/blog',
-        query: {
-          id: blogId,
-        },
-      })
-      window.open(routeUrl.href, '_blank')
-    },
-    // 修改当前页码
-    handleCurrentChange(newSize) {
-      this.queryInfo.pagenum = newSize
-      this.getBlogList()
-    },
-    // 修改当前页大小
-    handleSizeChange(newSize) {
-      this.queryInfo.pagesize = newSize
-    },
-    // 按分类筛选博客
-    async selectType(cmsType) {
-      this.typeId = cmsType.typeId
-      cmsListByTypeId(this.typeId).then((response) => {
-        this.blogList = this.picSrc(response.rows)
-        this.total = response.total
-        // this.totalcount = res.data.totalElements
-        this.selectMethod = '分类: ' + cmsType.typeName
-        this.selected = true
-      })
-    },
-    // 按标签筛选博客
-    async selectTag(tag) {
-      this.tagId = tag.tagId
-      cmsListByTagId(this.tagId).then((response) => {
-        this.blogList = this.picSrc(response.rows)
-        this.total = response.total
-        // this.totalcount = res.data.totalElements
-        this.selectMethod = '标签: ' + tag.tagName
-        this.selected = true
-      })
-    },
-    // 更新博客列表
-    updateBlogList() {
-      this.selected = false
-      this.typeId = -1
-      this.tagId = -1
-      this.selectMethod = '全部博客'
-      this.getBlogList()
-    },
-    // 得到所有的标签
-    async getFullTagList() {
-      this.tagList = this.fullTagList
-    },
-    async dealType() {
-      if (this.moreType) {
-        this.typeList = this.fullTypeList
-      } else {
-        this.typeList = this.fullTypeList.slice(0, 4)
-      }
-      this.moreType = !this.moreType
-    },
-    async dealTag() {
-      if (this.moreTag) {
-        await this.getFullTagList()
-      } else {
-        this.tagList = this.fullTagList.slice(0, 6)
-      }
-      this.moreTag = !this.moreTag
-    },
-    // 屏幕尺寸变化的监听函数
-    screenAdapter() {
-      this.screenWidth = document.documentElement.clientWidth
-    },
-  },
+)
+
+/** 获取博客列表 */
+function getBlogList() {
+  proxy.$modal.loading("加载中")
+  cmsListBlog(queryParams.value).then((response) => {
+    blogList.value = picSrc(response.rows)
+    total.value = response.total
+    proxy.$modal.closeLoading()
+  })
 }
+
+//首图地址修改
+function picSrc(blogList) {
+  for (let i = 0; i < blogList.length; i++) {
+    let blogInfo = blogList[i]
+    if (blogInfo.blogPic.length > 0) {
+      blogList[i].blogPic = import.meta.env.VUE_APP_BASE_API + blogInfo.blogPic
+    } else {
+      blogList[i].blogPic = '/errorImg.jpg'
+    }
+  }
+  return blogList
+}
+
+// 开始进入主页
+function startRead() {
+  nextTick(() => {
+    document.getElementById('index').scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+      // inline: 'nearest'
+    })
+  })
+}
+
+function compare(property) {
+  return function (a, b) {
+    let value1 = a[property].length
+    let value2 = b[property].length
+    return value2 - value1
+  }
+}
+
+// 获取推荐博客列表
+async function getRecommendList() {
+  cmsListRecommend(queryParams.value).then((response) => {
+    const {data: res} = response
+    recommendList.value = response.rows.slice(0, 4)
+    total.value = response.total
+  })
+}
+
+// 获取博客类型列表
+async function getTypeList() {
+  getBlogDetail(router.currentRoute.value.id).then((response) => {
+    for (let i = 0; i < response.types.length; i++) {
+      let typeInfo = response.types[i]
+      if (typeInfo.typePic.length > 0) {
+        response.types[i].typePic =
+            import.meta.env.VUE_APP_BASE_API + typeInfo.typePic
+      }
+    }
+    const {data: res} = response
+    fullTypeList.value = response.types
+    typeList.value = response.types.slice(0, 4)
+  })
+}
+
+// 获取博客标签列表
+async function getTagList() {
+  getBlogDetail(router.currentRoute.value.id).then((response) => {
+    const {data: res} = response
+    fullTagList.value = response.tags
+    tagList.value = response.tags.slice(0, 6)
+  })
+}
+
+// 跳转到博客详情页
+function getBlogInfo(blogId) {
+  let routeUrl = router.resolve({
+    path: '/cms/main/blog',
+    query: {
+      id: blogId,
+    },
+  })
+  window.open(routeUrl.href, '_blank')
+}
+
+// 修改当前页码
+function handleCurrentChange(newSize) {
+  queryInfo.value.pagenum = newSize
+  getBlogList()
+}
+
+// 修改当前页大小
+function handleSizeChange(newSize) {
+  queryInfo.value.pagesize = newSize
+}
+
+// 按分类筛选博客
+async function selectType(cmsType) {
+  typeId.value = cmsType.typeId
+  cmsListByTypeId(typeId.value).then((response) => {
+    blogList.value = picSrc(response.rows)
+    total.value = response.total
+    selectMethod.value = '分类: ' + cmsType.typeName
+    selected.value = true
+  })
+}
+
+// 按标签筛选博客
+async function selectTag(tag) {
+  tagId.value = tag.tagId
+  cmsListByTagId(tagId.value).then((response) => {
+    blogList.value = picSrc(response.rows)
+    total.value = response.total
+    selectMethod.value = '标签: ' + tag.tagName
+    selected.value = true
+  })
+}
+
+// 更新博客列表
+function updateBlogList() {
+  selected.value = false
+  typeId.value = -1
+  tagId.value = -1
+  selectMethod.value = '全部博客'
+  getBlogList()
+}
+
+// 得到所有的标签
+async function getFullTagList() {
+  tagList.value = fullTagList.value
+}
+
+async function dealType() {
+  if (moreType.value) {
+    typeList.value = fullTypeList.value
+  } else {
+    typeList.value = fullTypeList.value.slice(0, 4)
+  }
+  moreType.value = !moreType.value
+}
+
+async function dealTag() {
+  if (moreTag.value) {
+    await getFullTagList()
+  } else {
+    tagList.value = fullTagList.value.slice(0, 6)
+  }
+  moreTag.value = !moreTag.value
+}
+
+// 屏幕尺寸变化的监听函数
+function screenAdapter() {
+  screenWidth.value = document.documentElement.clientWidth
+}
+
+
+window.addEventListener('resize', screenAdapter)
+
+
 </script>
 
 <style scoped>
@@ -519,7 +511,7 @@ export default {
 }
 
 .left-item .pagination-container {
-  background: rgb(255, 255, 255, 0);
+  background: rgba(243, 18, 18, 0);
 }
 
 @keyframes clipMe {
@@ -561,11 +553,8 @@ export default {
   border-radius: 5px;
 }
 
-.el-pagination {
-  padding-bottom: 20px;
-}
 
-.el-card /deep/ .el-card__body {
+.el-card :deep(.el-card__body) {
   padding: 0;
 }
 
@@ -806,8 +795,6 @@ export default {
     line-height: 30px;
   }
 
-  .el-pagination {
-    width: 100%;
-  }
+
 }
 </style>

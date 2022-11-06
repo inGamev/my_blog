@@ -35,11 +35,11 @@
         <el-button
           type="primary"
           icon="el-icon-search"
-          size="mini"
+
           @click="handleQuery"
           >搜索</el-button
         >
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery"
+        <el-button icon="el-icon-refresh"  @click="resetQuery"
           >重置</el-button
         >
       </el-form-item>
@@ -51,7 +51,7 @@
           type="primary"
           plain
           icon="el-icon-plus"
-          size="mini"
+
           @click="handleAdd"
           v-hasPermi="['cms:blog:add']"
           >新增</el-button
@@ -62,7 +62,7 @@
           type="success"
           plain
           icon="el-icon-edit"
-          size="mini"
+
           :disabled="single"
           @click="handleUpdate"
           v-hasPermi="['cms:blog:edit']"
@@ -74,7 +74,7 @@
           type="danger"
           plain
           icon="el-icon-delete"
-          size="mini"
+
           :disabled="multiple"
           @click="handleDelete"
           v-hasPermi="['cms:blog:remove']"
@@ -86,7 +86,7 @@
           type="warning"
           plain
           icon="el-icon-download"
-          size="mini"
+
           @click="handleExport"
           v-hasPermi="['cms:blog:export']"
           >导出</el-button
@@ -137,7 +137,7 @@
       >
         <template v-slot="scope">
           <el-button
-            size="mini"
+
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
@@ -145,7 +145,7 @@
             >修改</el-button
           >
           <el-button
-            size="mini"
+
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
@@ -153,7 +153,7 @@
             >删除</el-button
           >
           <el-button
-            size="mini"
+
             type="text"
             icon="el-icon-folder-opened"
             @click="fileList(scope.row)"
@@ -249,7 +249,7 @@
         >
           <template v-slot="scope">
             <el-button
-              size="mini"
+
               type="text"
               icon="el-icon-download"
               @click="handleDownload(scope.row)"
@@ -270,7 +270,7 @@ import {
   delFileBlogInfo,
   getFileList,
 } from '@/api/cms/fileBlogInfo'
-import { Loading } from 'element-ui'
+import { ELLoading as Loading } from 'element-plus'
 
 export default {
   name: 'Blog',
@@ -522,7 +522,7 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
-      this.download(
+      proxy.download(
         'cms/blog/export',
         {
           ...this.queryParams,
@@ -550,7 +550,7 @@ export default {
             case 'bmp':
             case 'gif':
               response.data[i].pic =
-                process.env.VUE_APP_BASE_API + fileInfo.filePath
+                import.meta.env.VUE_APP_BASE_API + fileInfo.filePath
               break
             default:
               response.data[i].pic = image.bg1
@@ -573,7 +573,7 @@ export default {
       const a = document.createElement('a')
       a.setAttribute('download', name)
       a.setAttribute('target', '_blank')
-      a.setAttribute('href', process.env.VUE_APP_BASE_API + url)
+      a.setAttribute('href', import.meta.env.VUE_APP_BASE_API + url)
       a.click()
     },
   },

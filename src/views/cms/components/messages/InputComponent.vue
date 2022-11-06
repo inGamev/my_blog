@@ -52,7 +52,6 @@ export default {
       // default: 'comment'
     },
   },
-  components: {},
   data() {
     return {
       inputComment: '',

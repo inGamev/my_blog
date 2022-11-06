@@ -41,6 +41,9 @@ import ImagePreview from "@/components/ImagePreview"
 import TreeSelect from '@/components/TreeSelect'
 // 字典标签组件
 import DictTag from '@/components/DictTag'
+// 富文本组件
+import Editor from '@/components/Editor'
+import cmsEditor from '@/components/cmsEditor'
 
 const app = createApp(App)
 
@@ -62,6 +65,8 @@ app.component('FileUpload', FileUpload)
 app.component('ImageUpload', ImageUpload)
 app.component('ImagePreview', ImagePreview)
 app.component('RightToolbar', RightToolbar)
+app.component('Editor', Editor)
+app.component('cmsEditor', cmsEditor)
 
 app.use(router)
 app.use(store)

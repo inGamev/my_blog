@@ -31,7 +31,7 @@ var _self =
           },
           objId: function (e) {
             return (
-              e.__id || Object.defineProperty(e, '__id', { value: ++n }), e.__id
+              e.__id || Object.defineProperty(e, '__id', { modelValue: ++n }), e.__id
             )
           },
           clone: function t(e, r) {
@@ -476,7 +476,7 @@ var _self =
       (a.attributes.title = a.content.replace(/&amp;/, '&'))
   }),
   Object.defineProperty(Prism.languages.markup.tag, 'addInlined', {
-    value: function (a, e) {
+    modelValue: function (a, e) {
       var s = {}
       ;(s['language-' + e] = {
         pattern: /(^<!\[CDATA\[)[\s\S]+?(?=\]\]>$)/i,
@@ -507,7 +507,7 @@ var _self =
     },
   }),
   Object.defineProperty(Prism.languages.markup.tag, 'addAttribute', {
-    value: function (a, e) {
+    modelValue: function (a, e) {
       Prism.languages.markup.tag.inside['special-attr'].push({
         pattern: RegExp(
           '(^|["\'\\s])(?:' +
@@ -2994,7 +2994,7 @@ Prism.languages.dax = {
         },
       })
   }),
-    Object.defineProperty(i.languages.diff, 'PREFIXES', { value: r })
+    Object.defineProperty(i.languages.diff, 'PREFIXES', { modelValue: r })
 })(Prism)
 !(function (h) {
   function v(e, n) {
@@ -3002,7 +3002,7 @@ Prism.languages.dax = {
   }
   Object.defineProperties((h.languages['markup-templating'] = {}), {
     buildPlaceholders: {
-      value: function (a, r, e, o) {
+      modelValue: function (a, r, e, o) {
         if (a.language === r) {
           var c = (a.tokenStack = [])
           ;(a.code = a.code.replace(e, function (e) {
@@ -3016,7 +3016,7 @@ Prism.languages.dax = {
       },
     },
     tokenizePlaceholders: {
-      value: function (p, k) {
+      modelValue: function (p, k) {
         if (p.language === k && p.tokenStack) {
           p.grammar = h.languages[k]
           var m = 0,
@@ -5796,7 +5796,7 @@ Prism.languages.j = {
     punctuation: /[{}]/,
   })
   Object.defineProperty(a, 'addSupport', {
-    value: function (a, e) {
+    modelValue: function (a, e) {
       'string' == typeof a && (a = [a]),
         a.forEach(function (a) {
           !(function (a, e) {
@@ -11533,7 +11533,7 @@ Prism.languages.iecst = {
     }
   }
   n.languages['t4-templating'] = Object.defineProperty({}, 'createT4', {
-    value: function (e) {
+    modelValue: function (e) {
       var t = n.languages[e],
         a = 'language-' + e
       return {

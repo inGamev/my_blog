@@ -1,41 +1,37 @@
 <template>
   <div class="app-container">
     <el-form
-      :model="queryParams"
-      ref="queryForm"
-      :inline="true"
-      v-show="showSearch"
-      label-width="68px"
+        :model="queryParams"
+        ref="queryForm"
+        :inline="true"
+        v-show="showSearch"
+        label-width="68px"
     >
       <el-form-item label="评论者" prop="content" v-if="isAdmin">
         <el-input
-          v-model:value="queryParams.createBy"
-          placeholder="请输入评论者"
-          clearable
-          size="small"
-          @keyup.enter="handleQuery"
+            v-model="queryParams.createBy"
+            placeholder="请输入评论者"
+            clearable
+            size="small"
+            @keyup.enter="handleQuery"
         />
       </el-form-item>
       <el-form-item label="评论内容" prop="content">
         <el-input
-          v-model:value="queryParams.content"
-          placeholder="请输入评论内容"
-          clearable
-          size="small"
-          @keyup.enter="handleQuery"
+            v-model="queryParams.content"
+            placeholder="请输入评论内容"
+            clearable
+            size="small"
+            @keyup.enter="handleQuery"
         />
       </el-form-item>
       <el-form-item>
         <el-button
-          type="primary"
-          icon="el-icon-search"
-          size="mini"
-          @click="handleQuery"
-          >搜索</el-button
-        >
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery"
-          >重置</el-button
-        >
+            type="primary"
+            icon="el-icon-search"
+            @click="handleQuery">搜索
+        </el-button>
+        <el-button icon="el-icon-refresh" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
 
@@ -45,7 +41,7 @@
             type="primary"
             plain
             icon="el-icon-plus"
-            size="mini"
+
             @click="handleAdd"
             v-hasPermi="['cms:comment:add']"
           >新增</el-button>
@@ -55,7 +51,7 @@
             type="success"
             plain
             icon="el-icon-edit"
-            size="mini"
+
             :disabled="single"
             @click="handleUpdate"
             v-hasPermi="['cms:comment:edit']"
@@ -66,7 +62,7 @@
             type="danger"
             plain
             icon="el-icon-delete"
-            size="mini"
+
             :disabled="multiple"
             @click="handleDelete"
             v-hasPermi="['cms:comment:remove']"
@@ -77,7 +73,7 @@
             type="warning"
             plain
             icon="el-icon-download"
-            size="mini"
+
             @click="handleExport"
             v-hasPermi="['cms:comment:export']"
           >导出</el-button>
@@ -98,14 +94,14 @@
         <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
           <template slot-scope="scope">
             <el-button
-              size="mini"
+
               type="text"
               icon="el-icon-edit"
               @click="handleUpdate(scope.row)"
               v-hasPermi="['cms:comment:edit']"
             >修改</el-button>
             <el-button
-              size="mini"
+
               type="text"
               icon="el-icon-delete"
               @click="handleDelete(scope.row)"
@@ -119,15 +115,15 @@
       <div class="el-card__header" style="text-align: left; padding: 0">
         <h3 style="float: left; margin: 0">评论列表</h3>
         <right-toolbar
-          style="float: right"
-          v-model:showSearch="showSearch"
-          @queryTable="getList"
+            style="float: right"
+            v-model="showSearch"
+            @queryTable="getList"
         ></right-toolbar>
       </div>
       <ul style="padding: 0" class="comment-list">
         <li
-          v-show="commentList.length == 0"
-          style="
+            v-show="commentList.length == 0"
+            style="
             text-align: center;
             border-bottom: 1px dashed #ccc;
             margin: 10px 0;
@@ -138,43 +134,41 @@
         </li>
         <li class="comment" v-for="mes in commentList" :key="mes.id">
           <el-avatar
-            v-if="mes.avatar !== '' && mes.avatar != null"
-            :src="mes.avatar"
+              v-if="mes.avatar !== '' && mes.avatar != null"
+              :src="mes.avatar"
           ></el-avatar>
           <el-avatar v-else icon="el-icon-user-solid"></el-avatar>
           <div class="content">
             <div
-              style="display: flex; justify-content: space-between; width: 100%"
+                style="display: flex; justify-content: space-between; width: 100%"
             >
               <div class="nkname">
                 <span class="name">{{ mes.createBy }} </span>
                 <span class="date">{{ mes.createTime }}</span>
                 <span v-show="mes.type == '0'" class="rp">给你评论</span>
                 <span v-show="mes.type == '1'" class="rp">回复了</span>
-                <span v-show="mes.type == '1'" class="pcreateBy">{{
-                  mes.pcreateBy
-                }}</span>
+                <span v-show="mes.type == '1'" class="pcreateBy">{{ mes.pcreateBy }}</span>
                 <span v-show="mes.type == '1'" class="rp">的评论</span>
               </div>
               <div class="op">
                 <span @click="getBlogInfo(mes)" class="blog">查看</span>
                 <span> | </span>
                 <el-button
-                  type="text"
-                  @click="handleAdd(mes)"
-                  v-hasPermi="['cms:comment:add']"
-                  >回复</el-button
-                >
+                    type="text"
+                    @click="handleAdd(mes)"
+                    v-hasPermi="['cms:comment:add']"
+                >回复
+                </el-button>
                 <span
-                  v-show="!isAdmin && mes.createBy != name"
-                  style="margin-right: 39.43px"
+                    v-show="!isAdmin && mes.createBy != userStore.name"
+                    style="margin-right: 39.43px"
                 ></span>
-                <span v-show="!(!isAdmin && mes.createBy != name)"> | </span>
+                <span v-show="!(!isAdmin && mes.createBy != userStore.name)"> | </span>
                 <span
-                  v-show="!(!isAdmin && mes.createBy != name)"
-                  class="del"
-                  @click="handleDelete(mes)"
-                  >删除</span
+                    v-show="!(!isAdmin && mes.createBy != userStore.name)"
+                    class="del"
+                    @click="handleDelete(mes)"
+                >删除</span
                 >
               </div>
             </div>
@@ -185,19 +179,19 @@
     </el-card>
 
     <pagination
-      v-show="total > 0"
-      :total="total"
-      v-model:page="queryParams.pageNum"
-      v-model:limit="queryParams.pageSize"
-      @pagination="getList"
+        v-show="total > 0"
+        :total="total"
+        v-model:page="queryParams.pageNum"
+        v-model:limit="queryParams.pageSize"
+        @pagination="getList"
     />
 
     <!-- 添加或修改评论管理对话框 -->
     <el-dialog
-      :title="title"
-      v-model:visible="open"
-      width="500px"
-      append-to-body
+        :title="title"
+        v-model:visible="open"
+        width="500px"
+        append-to-body
     >
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <!-- <el-form-item label="父评论id" prop="parentId">
@@ -211,11 +205,11 @@
           </el-form-item> -->
         <!-- <el-form-item label="内容" prop="content"> -->
         <el-input
-          v-model:value="form.content"
-          type="textarea"
-          maxlength="100"
-          show-word-limit
-          :placeholder="toName"
+            v-model:value="form.content"
+            type="textarea"
+            maxlength="100"
+            show-word-limit
+            :placeholder="toName"
         />
         <!-- </el-form-item> -->
         <!-- <el-form-item label="被评论者id，可以是人、项目、资源" prop="blogId">
@@ -238,7 +232,7 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import {
   listComment,
   getComment,
@@ -246,219 +240,216 @@ import {
   addComment,
   updateComment,
 } from '@/api/cms/comment'
-import { Loading } from 'element-ui'
+import {nextTick, onMounted} from "vue";
+import useUserStore from "@/store/modules/user";
 
-export default {
-  name: 'Comment',
-  data() {
-    return {
-      // 遮罩层
-      loading: true,
-      // 选中数组
-      ids: [],
-      names: [],
-      // 非单个禁用
-      single: true,
-      // 非多个禁用
-      multiple: true,
-      // 显示搜索条件
-      showSearch: false,
-      // 总条数
-      total: 0,
-      // 评论管理表格数据
-      commentList: [],
-      // 弹出层标题
-      title: '',
-      // 是否显示弹出层
-      open: false,
-      // 查询参数
-      queryParams: {
-        pageNum: 1,
-        pageSize: 10,
-        parentId: null,
-        mainId: null,
-        likeNum: null,
-        content: null,
-        type: null,
-        blogId: null,
-        userId: null,
-        delFlag: null,
-        createBy: null,
-      },
-      // 表单参数
-      form: {},
-      // 表单校验
-      rules: {},
-      toName: '',
-      isAdmin: false,
-    }
-  },
-  computed: {
-    ...mapGetters(['name']),
-  },
-  created() {},
-  mounted: function () {
-    this.$nextTick(function () {
-      // 仅在整个视图都被渲染之后才会运行的代码
-      this.getList()
-      this.isAdminRole()
+const userStore = useUserStore()
+const {proxy} = getCurrentInstance();
+const router = useRouter();
+
+const loading = ref(true)
+// 选中数组
+const ids = ref([])
+const names = ref([])
+// 非单个禁用
+const single = ref(true)
+// 非多个禁用
+const multiple = ref(true)
+// 显示搜索条件
+const showSearch = ref(false)
+// 总条数
+const total = ref(0)
+// 评论管理表格数据
+const commentList = ref([])
+// 弹出层标题
+const title = ref('')
+// 是否显示弹出层
+const open = ref(false)
+// 查询参数
+const queryParams = ref({
+  pageNum: 1,
+  pageSize: 10,
+  parentId: null,
+  mainId: null,
+  likeNum: null,
+  content: null,
+  type: null,
+  blogId: null,
+  userId: null,
+  delFlag: null,
+  createBy: null,
+})
+// 表单参数
+const form = ref({})
+// 表单校验
+const rules = ref({})
+const toName = ref('')
+const isAdmin = ref(false)
+
+onMounted(
+    nextTick(function () {
+      getList()
+      isAdminRole()
     })
-  },
-  methods: {
-    /** 查询评论管理列表 */
-    getList() {
-      // this.loading = true;
-      let loadingInstance = Loading.service({
-        target: '.comment-list',
-      })
-      listComment(this.queryParams).then((response) => {
-        for (let i = 0; i < response.rows.length; i++) {
-          let mesInfo = response.rows[i]
-          if (mesInfo.avatar != null && mesInfo.avatar != '') {
-            response.rows[i].avatar =
-              process.env.VUE_APP_BASE_API + mesInfo.avatar
-          }
-        }
-        this.commentList = response.rows
-        this.total = response.total
-        // this.loading = false;
-        setTimeout(() => {
-          loadingInstance.close()
-        }, 100)
-      })
-    },
-    // 取消按钮
-    cancel() {
-      this.open = false
-      this.reset()
-    },
-    // 表单重置
-    reset() {
-      this.form = {
-        id: null,
-        parentId: null,
-        mainId: null,
-        likeNum: null,
-        content: null,
-        type: null,
-        blogId: null,
-        delFlag: null,
-        userId: null,
-        createBy: null,
-        createTime: null,
-        updateBy: null,
-        updateTime: null,
+)
+
+/** 查询评论管理列表 */
+function getList() {
+  proxy.$modal.loading("正在查询...");
+  listComment(queryParams.value).then((response) => {
+    for (let i = 0; i < response.rows.length; i++) {
+      let mesInfo = response.rows[i]
+      if (mesInfo.avatar != null && mesInfo.avatar != '') {
+        response.rows[i].avatar =
+            import.meta.env.VUE_APP_BASE_API + mesInfo.avatar
       }
-      this.resetForm('form')
-    },
-    /** 搜索按钮操作 */
-    handleQuery() {
-      this.queryParams.pageNum = 1
-      this.getList()
-    },
-    /** 重置按钮操作 */
-    resetQuery() {
-      this.queryParams.createBy = ''
-      this.queryParams.content = ''
-      this.resetForm('queryForm')
-      this.handleQuery()
-    },
-    // 多选框选中数据
-    handleSelectionChange(selection) {
-      this.ids = selection.map((item) => item.id)
-      this.single = selection.length !== 1
-      this.multiple = !selection.length
-    },
-    /** 新增按钮操作 */
-    handleAdd(mes) {
-      this.reset()
-      if (mes.mainId != null) {
-        this.form.mainId = mes.mainId
-      } else {
-        this.form.mainId = mes.id
-      }
-      this.form.parentId = mes.id
-      this.form.blogId = mes.blogId
-      this.form.type = '1'
-      this.form.createBy = this.$store.getters.name
-      this.toName = '@' + mes.createBy
-      this.open = true
-      this.title = '回复评论'
-    },
-    /** 修改按钮操作 */
-    handleUpdate(row) {
-      this.reset()
-      const id = row.id || this.ids
-      getComment(id).then((response) => {
-        this.form = response.data
-        this.open = true
-        this.title = '修改评论管理'
-      })
-    },
-    /** 提交按钮 */
-    submitForm() {
-      this.$refs['form'].validate((valid) => {
-        if (valid) {
-          if (this.form.id != null) {
-            updateComment(this.form).then((response) => {
-              this.$modal.msgSuccess('修改成功')
-              this.open = false
-              this.getList()
-            })
-          } else {
-            addComment(this.form).then((response) => {
-              this.$modal.msgSuccess('回复成功')
-              this.open = false
-              this.getList()
-            })
-          }
-        }
-      })
-    },
-    /** 删除按钮操作 */
-    handleDelete(row) {
-      const ids = row.id || this.ids
-      let name = row.content || this.names
-      this.$modal
-        .confirm('是否确认删除 "' + name + '" ？')
-        .then(function () {
-          return delComment(ids)
-        })
-        .then(() => {
-          this.getList()
-          this.$modal.msgSuccess('删除成功')
-        })
-        .catch(() => {})
-    },
-    /** 导出按钮操作 */
-    handleExport() {
-      this.download(
-        'cms/comment/export',
-        {
-          ...this.queryParams,
-        },
-        `comment_${new Date().getTime()}.xlsx`
-      )
-    },
-    // 跳转到评论页
-    getBlogInfo(mes) {
-      let routeUrl = this.$router.resolve({
-        path: '/cms/main/blog',
-        query: {
-          id: mes.blogId,
-          commentId: mes.id,
-        },
-      })
-      window.open(routeUrl.href, '_blank')
-    },
-    isAdminRole() {
-      // 验证用户是否具备某角色
-      if (this.$auth.hasRole('admin') || this.$auth.hasRole('cms')) {
-        this.isAdmin = true
-      }
-    },
-  },
+    }
+    commentList.value = response.rows
+    total.value = response.total
+
+    proxy.$modal.closeLoading();
+  })
 }
+
+// 取消按钮
+function cancel() {
+  open.value = false
+  reset()
+}
+
+// 表单重置
+function reset() {
+  form.value = {
+    id: null,
+    parentId: null,
+    mainId: null,
+    likeNum: null,
+    content: null,
+    type: null,
+    blogId: null,
+    delFlag: null,
+    userId: null,
+    createBy: null,
+    createTime: null,
+    updateBy: null,
+    updateTime: null,
+  }
+  proxy.resetForm('form')
+}
+
+/** 搜索按钮操作 */
+function handleQuery() {
+  queryParams.value.pageNum = 1
+  getList()
+}
+
+/** 重置按钮操作 */
+function resetQuery() {
+  queryParams.value.createBy = ''
+  queryParams.value.content = ''
+  proxy.resetForm('queryForm')
+  handleQuery()
+}
+
+// 多选框选中数据
+function handleSelectionChange(selection) {
+  ids.value = selection.map((item) => item.id)
+  single.value = selection.length !== 1
+  multiple.value = !selection.length
+}
+
+/** 新增按钮操作 */
+function handleAdd(mes) {
+  reset()
+  if (mes.mainId != null) {
+    form.value.mainId = mes.mainId
+  } else {
+    form.value.mainId = mes.id
+  }
+  form.value.parentId = mes.id
+  form.value.blogId = mes.blogId
+  form.value.type = '1'
+  form.value.createBy = userStore.name
+  toName.value = '@' + mes.createBy
+  open.value = true
+  title.value = '回复评论'
+}
+
+/** 修改按钮操作 */
+function handleUpdate(row) {
+  reset()
+  const id = row.id || this.ids
+  getComment(id).then((response) => {
+    form.value = response.data
+    open.value = true
+    title.value = '修改评论管理'
+  })
+}
+
+/** 提交按钮 */
+function submitForm() {
+  proxy.$refs['form'].validate((valid) => {
+    if (valid) {
+      if (form.value.valueid != null) {
+        updateComment(form.value).then((response) => {
+          proxy.$modal.msgSuccess('修改成功')
+          open.value = false
+          getList()
+        })
+      } else {
+        addComment(form.value).then((response) => {
+          proxy.$modal.msgSuccess('回复成功')
+          open.value = false
+          getList()
+        })
+      }
+    }
+  })
+}
+
+/** 删除按钮操作 */
+function handleDelete(row) {
+  const ids = row.id || ids.value
+  let name = row.content || names.value
+  proxy.$modal
+      .confirm('是否确认删除 "' + name + '" ？')
+      .then(function () {
+        return delComment(ids)
+      })
+      .then(() => {
+        getList()
+        proxy.$modal.msgSuccess('删除成功')
+      })
+      .catch(() => {
+      })
+}
+
+
+/** 导出按钮操作 */
+function handleExport() {
+  proxy.download('cms/comment/export', {  ...queryParams.value,  }, `comment_${new Date().getTime()}.xlsx`)
+}
+
+// 跳转到评论页
+function getBlogInfo(mes) {
+  let routeUrl = router.resolve({
+    path: '/cms/main/blog',
+    query: {
+      id: mes.blogId,
+      commentId: mes.id,
+    },
+  })
+
+  window.open(routeUrl.href, '_blank')
+}
+
+function isAdminRole() {
+  // 验证用户是否具备某角色
+  if (proxy.$auth.hasRole('admin') || proxy.$auth.hasRole('cms')) {
+    isAdmin.value = true
+  }
+}
+
 </script>
 
 <style scoped>
@@ -467,17 +458,20 @@ export default {
   margin: 10px 0;
   display: flex;
 }
+
 .el-avatar {
   width: 35px;
   height: 35px;
   box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.06);
   flex-shrink: 0;
 }
+
 .content {
   text-align: left;
   font-size: 14px;
   flex-grow: 1;
 }
+
 .nkname {
   margin-left: 10px;
   max-width: 530px;
@@ -485,35 +479,44 @@ export default {
   white-space: nowrap;
   text-overflow: ellipsis;
 }
+
 .rp,
 .date {
   color: #999;
   margin-left: 10px;
 }
+
 .pcreateBy {
   margin-left: 10px;
 }
+
 .blog {
   color: #349edf;
   margin-left: 10px;
   cursor: pointer;
 }
+
 .reply {
   margin-left: 10px;
 }
+
 .op {
   color: #ddd;
   font-weight: lighter;
 }
+
 .rep {
   color: #349edf;
 }
+
 .del {
   color: red;
 }
+
 .op:hover {
   cursor: pointer;
 }
+
 .el-table__empty-text {
   line-height: 60px;
   width: 50%;

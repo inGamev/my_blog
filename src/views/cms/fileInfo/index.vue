@@ -1,28 +1,28 @@
 <template>
   <div class="app-container">
     <el-form
-      :model="queryParams"
-      ref="queryForm"
-      :inline="true"
-      v-show="showSearch"
-      label-width="68px"
+        :model="queryParams"
+        ref="queryForm"
+        :inline="true"
+        v-show="showSearch"
+        label-width="68px"
     >
       <el-form-item label="文件名称" prop="fileOriginName">
         <el-input
-          v-model:value="queryParams.fileOriginName"
-          placeholder="请输入文件名称"
-          clearable
-          size="small"
-          @keyup.enter="handleQuery"
+            v-model:value="queryParams.fileOriginName"
+            placeholder="请输入文件名称"
+            clearable
+            size="small"
+            @keyup.enter="handleQuery"
         />
       </el-form-item>
       <el-form-item label="文件类型" prop="fileSuffix">
         <el-input
-          v-model:value="queryParams.fileSuffix"
-          placeholder="请输入文件类型，例如txt"
-          clearable
-          size="small"
-          @keyup.enter="handleQuery"
+            v-model:value="queryParams.fileSuffix"
+            placeholder="请输入文件类型，例如txt"
+            clearable
+            size="small"
+            @keyup.enter="handleQuery"
         />
       </el-form-item>
       <!-- <el-form-item label="文件大小" prop="fileSizeInfo">
@@ -36,11 +36,11 @@
         </el-form-item> -->
       <el-form-item label="存储名称" prop="fileObjectName">
         <el-input
-          v-model:value="queryParams.fileObjectName"
-          placeholder="请输入存储文件名称"
-          clearable
-          size="small"
-          @keyup.enter="handleQuery"
+            v-model:value="queryParams.fileObjectName"
+            placeholder="请输入存储文件名称"
+            clearable
+            size="small"
+            @keyup.enter="handleQuery"
         />
       </el-form-item>
       <!-- <el-form-item label="存储路径" prop="filePath">
@@ -54,14 +54,16 @@
         </el-form-item> -->
       <el-form-item>
         <el-button
-          type="primary"
-          icon="el-icon-search"
-          size="mini"
-          @click="handleQuery"
-          >搜索</el-button
+            type="primary"
+            icon="el-icon-search"
+
+            @click="handleQuery"
+        >搜索
+        </el-button
         >
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery"
-          >重置</el-button
+        <el-button icon="el-icon-refresh" @click="resetQuery"
+        >重置
+        </el-button
         >
       </el-form-item>
     </el-form>
@@ -72,7 +74,7 @@
             type="primary"
             plain
             icon="el-icon-plus"
-            size="mini"
+
             @click="handleAdd"
             v-hasPermi="['cms:fileInfo:add']"
           >新增</el-button>
@@ -82,7 +84,7 @@
             type="success"
             plain
             icon="el-icon-edit"
-            size="mini"
+
             :disabled="single"
             @click="handleUpdate"
             v-hasPermi="['cms:fileInfo:edit']"
@@ -90,25 +92,27 @@
         </el-col> -->
       <el-col :span="1.5">
         <el-button
-          type="primary"
-          plain
-          icon="el-icon-upload"
-          size="mini"
-          @click="uploadFile"
-          v-hasPermi="['cms:fileInfo:add']"
-          >上传文件</el-button
+            type="primary"
+            plain
+            icon="el-icon-upload"
+
+            @click="uploadFile"
+            v-hasPermi="['cms:fileInfo:add']"
+        >上传文件
+        </el-button
         >
       </el-col>
       <el-col :span="1.5">
         <el-button
-          type="danger"
-          plain
-          icon="el-icon-delete"
-          size="mini"
-          :disabled="multiple"
-          @click="handleDelete"
-          v-hasPermi="['cms:fileInfo:remove']"
-          >删除</el-button
+            type="danger"
+            plain
+            icon="el-icon-delete"
+
+            :disabled="multiple"
+            @click="handleDelete"
+            v-hasPermi="['cms:fileInfo:remove']"
+        >删除
+        </el-button
         >
       </el-col>
       <!-- <el-col :span="1.5">
@@ -116,95 +120,97 @@
             type="warning"
             plain
             icon="el-icon-download"
-            size="mini"
+
             @click="handleExport"
             v-hasPermi="['cms:fileInfo:export']"
           >导出</el-button>
         </el-col> -->
       <right-toolbar
-        v-model:showSearch="showSearch"
-        @queryTable="getList"
+          v-model:showSearch="showSearch"
+          @queryTable="getList"
       ></right-toolbar>
     </el-row>
 
     <el-table
-      v-loading="loading"
-      :data="fileInfoList"
-      @selection-change="handleSelectionChange"
+        v-loading="loading"
+        :data="fileInfoList"
+        @selection-change="handleSelectionChange"
     >
-      <el-table-column type="selection" width="55" align="center" />
+      <el-table-column type="selection" width="55" align="center"/>
       <!-- <el-table-column label="文件主键id" align="center" prop="fileId" /> -->
       <el-table-column label="图片预览" align="center" prop="pic">
         <template v-slot="scope">
           <el-image
-            style="width: 120px; height: 60px"
-            :src="scope.row.pic"
-            lazy
-            :preview-src-list="[scope.row.pic]"
+              style="width: 120px; height: 60px"
+              :src="scope.row.pic"
+              lazy
+              :preview-src-list="[scope.row.pic]"
           >
           </el-image>
         </template>
       </el-table-column>
-      <el-table-column label="文件名称" align="center" prop="fileOriginName" />
-      <el-table-column label="文件类型" align="center" prop="fileSuffix" />
-      <el-table-column label="文件大小" align="center" prop="fileSizeInfo" />
+      <el-table-column label="文件名称" align="center" prop="fileOriginName"/>
+      <el-table-column label="文件类型" align="center" prop="fileSuffix"/>
+      <el-table-column label="文件大小" align="center" prop="fileSizeInfo"/>
       <el-table-column
-        label="存储文件名称"
-        align="center"
-        prop="fileObjectName"
+          label="存储文件名称"
+          align="center"
+          prop="fileObjectName"
       />
       <!-- <el-table-column label="存储路径" align="center" prop="filePath" /> -->
-      <el-table-column label="创建者" align="center" prop="createBy" />
+      <el-table-column label="创建者" align="center" prop="createBy"/>
       <el-table-column
-        label="创建时间"
-        align="center"
-        prop="createTime"
-        width="100"
+          label="创建时间"
+          align="center"
+          prop="createTime"
+          width="100"
       >
         <template v-slot="scope">
           <span>{{
-            parseTime(scope.row.createTime, '{y}-{m}-{d} {h}:{i}:{s}')
-          }}</span>
+              parseTime(scope.row.createTime, '{y}-{m}-{d} {h}:{i}:{s}')
+            }}</span>
         </template>
       </el-table-column>
       <el-table-column
-        label="操作"
-        align="center"
-        class-name="small-padding fixed-width"
+          label="操作"
+          align="center"
+          class-name="small-padding fixed-width"
       >
         <template v-slot="scope">
           <!-- <el-button
-              size="mini"
+
               type="text"
               icon="el-icon-edit"
               @click="handleUpdate(scope.row)"
               v-hasPermi="['cms:fileInfo:edit']"
             >修改</el-button> -->
           <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-download"
-            @click="handleDownload(scope.row)"
-            >下载</el-button
+
+              type="text"
+              icon="el-icon-download"
+              @click="handleDownload(scope.row)"
+          >下载
+          </el-button
           >
           <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
-            @click="handleDelete(scope.row)"
-            v-hasPermi="['cms:fileInfo:remove']"
-            >删除</el-button
+
+              type="text"
+              icon="el-icon-delete"
+              @click="handleDelete(scope.row)"
+              v-hasPermi="['cms:fileInfo:remove']"
+          >删除
+          </el-button
           >
         </template>
       </el-table-column>
     </el-table>
 
     <pagination
-      v-show="total > 0"
-      :total="total"
-      v-model:page="queryParams.pageNum"
-      v-model:limit="queryParams.pageSize"
-      @pagination="getList"
+        v-show="total > 0"
+        :total="total"
+        v-model:page="queryParams.pageNum"
+        v-model:limit="queryParams.pageSize"
+        @pagination="getList"
     />
 
     <!-- 添加或修改文件管理对话框 -->
@@ -235,33 +241,32 @@
         </div>
       </el-dialog> -->
     <el-dialog
-      :title="title"
-      v-model:visible="open"
-      width="500px"
-      append-to-body
-    >
+        :title="title"
+        v-model:visible="open"
+        width="500px"
+        append-to-body>
       <el-upload
-        style="min-height: 200px"
-        ref="upload"
-        :limit="5"
-        accept=".jpg, .png,.txt,.doc,.docx,.xls,.xlsx,.ppt,.zip,.pdf"
-        :action="upload.url"
-        :headers="upload.headers"
-        :file-list="upload.fileList"
-        :on-progress="handleFileUploadProgress"
-        :on-success="handleFileSuccess"
-        :auto-upload="false"
-      >
+          style="min-height: 200px"
+          ref="upload"
+          :limit="5"
+          accept=".jpg, .png,.txt,.doc,.docx,.xls,.xlsx,.ppt,.zip,.pdf"
+          :action="upload.url"
+          :headers="upload.headers"
+          :file-list="upload.fileList"
+          :on-progress="handleFileUploadProgress"
+          :on-success="handleFileSuccess"
+          :auto-upload="false">
         <template v-slot:trigger>
           <el-button size="small" type="primary">选取文件</el-button>
         </template>
         <el-button
-          style="margin-left: 10px"
-          size="small"
-          type="success"
-          :loading="upload.isUploading"
-          @click="submitUpload"
-          >上传到服务器</el-button
+            style="margin-left: 10px"
+            size="small"
+            type="success"
+            :loading="upload.isUploading"
+            @click="submitUpload"
+        >上传到服务器
+        </el-button
         >
         <template v-slot:tip>
           <div class="el-upload__tip">
@@ -281,7 +286,7 @@ import {
   addFileInfo,
   updateFileInfo,
 } from '@/api/cms/fileInfo'
-import { getToken } from '@/utils/auth'
+import {getToken} from '@/utils/auth'
 import image from './image.js'
 import store from '@/store'
 
@@ -313,9 +318,9 @@ export default {
         // 是否禁用上传
         isUploading: false,
         // 设置上传的请求头部
-        headers: { Authorization: 'Bearer ' + getToken() },
+        headers: {Authorization: 'Bearer ' + getToken()},
         // 上传的地址
-        url: process.env.VUE_APP_BASE_API + '/common/upload',
+        url: import.meta.env.VUE_APP_BASE_API + '/common/upload',
         // 上传的文件列表
         fileList: [],
       },
@@ -335,7 +340,7 @@ export default {
       // 表单校验
       rules: {
         fileOriginName: [
-          { required: true, message: '文件名称不能为空', trigger: 'blur' },
+          {required: true, message: '文件名称不能为空', trigger: 'blur'},
         ],
         delFlag: [
           {
@@ -359,7 +364,7 @@ export default {
       const a = document.createElement('a')
       a.setAttribute('download', name)
       a.setAttribute('target', '_blank')
-      a.setAttribute('href', process.env.VUE_APP_BASE_API + url)
+      a.setAttribute('href', import.meta.env.VUE_APP_BASE_API + url)
       a.click()
     },
     /** 查询文件管理列表 */
@@ -375,7 +380,7 @@ export default {
             case 'bmp':
             case 'gif':
               response.rows[i].pic =
-                process.env.VUE_APP_BASE_API + fileInfo.filePath
+                  import.meta.env.VUE_APP_BASE_API + fileInfo.filePath
               break
             default:
               response.rows[i].pic = image.bg1
@@ -487,24 +492,25 @@ export default {
       const fileIds = row.fileId || this.ids
       let fileOriginName = row.fileOriginName || this.fileNames
       this.$modal
-        .confirm('是否确认删除文件名称为"' + fileOriginName + '"的数据项？')
-        .then(function () {
-          return delFileInfo(fileIds)
-        })
-        .then(() => {
-          this.getList()
-          this.$modal.msgSuccess('删除成功')
-        })
-        .catch(() => {})
+          .confirm('是否确认删除文件名称为"' + fileOriginName + '"的数据项？')
+          .then(function () {
+            return delFileInfo(fileIds)
+          })
+          .then(() => {
+            this.getList()
+            this.$modal.msgSuccess('删除成功')
+          })
+          .catch(() => {
+          })
     },
     /** 导出按钮操作 */
     handleExport() {
-      this.download(
-        'cms/fileInfo/export',
-        {
-          ...this.queryParams,
-        },
-        `fileInfo_${new Date().getTime()}.xlsx`
+      proxy.download(
+          'cms/fileInfo/export',
+          {
+            ...this.queryParams,
+          },
+          `fileInfo_${new Date().getTime()}.xlsx`
       )
     },
   },

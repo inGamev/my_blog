@@ -45,7 +45,7 @@ export const constantRoutes = [
         children: [
             {
                 path: 'main',
-                component: () => import('@/views/cms/main'),
+                component: () => import('@/views/cms/cmsMain'),
                 hidden: true,
                 children: [
                     {
@@ -128,15 +128,17 @@ export const constantRoutes = [
     {
         path: '',
         component: Layout,
-        redirect: '/index',
-        children: [
-            {
-                path: '/index',
-                component: () => import('@/views/index'),
-                name: 'Index',
-                meta: {title: '首页', icon: 'dashboard', affix: true}
+        redirect: '/cms',
+        children: [{
+            path: 'index',
+            component: () => import('@/views/index'),
+            name: 'Index',
+            meta: {
+                title: '首页',
+                icon: 'dashboard',
+                affix: true
             }
-        ]
+        }]
     },
     {
         path: '/user',

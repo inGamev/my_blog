@@ -3,21 +3,20 @@
     <el-col :sm="3" class="hidden-xs-only" style="opacity: 0">左侧占位</el-col>
     <el-col :xs="24" :sm="18">
       <el-card
-        style="background-color: rgba(255, 255, 255, 1)"
-        class="first-card"
-      >
-        <template v-slot:header>
+          style="background-color: rgba(255, 255, 255, 1)"
+          class="first-card">
+        <template #header>
           <div class="total blog-info">
-            <div class="user-info">
-              <i class="el-icon-user"></i>
-              <span class="header"> {{ blog.createBy }}</span>
-            </div>
+<!--            <div class="user-info">-->
+<!--              <el-icon><User /></el-icon>-->
+<!--              <span class="header"> {{ blog.createBy }}</span>-->
+<!--            </div>-->
             <div class="blog-date">
-              <i class="el-icon-date"></i>
+              <el-icon><Calendar /></el-icon>
               <span> {{ blog.createTime }}</span>
             </div>
             <div class="blog-views">
-              <i class="el-icon-view"></i>
+              <el-icon><View /></el-icon>
               <span> {{ blog.views }}</span>
             </div>
           </div>
@@ -25,16 +24,17 @@
         <h2 class="blog-title header">
           {{ blog.title }}
           <el-tag
-            size="mini"
-            v-for="tag in blog.types"
-            :key="tag.typeId"
-            type="info"
-            >{{ tag.typeName }}</el-tag
+
+              v-for="tag in blog.types"
+              :key="tag.typeId"
+              type="info"
+          >{{ tag.typeName }}
+          </el-tag
           >
         </h2>
         <div
-          class="typo m-padded-lr-responsive m-padded-tb-large ql-editor"
-          v-html="blog.content"
+            class="typo m-padded-lr-responsive m-padded-tb-large ql-editor"
+            v-html="blog.content"
         ></div>
         <div class="tags">
           <div class="tag-item" v-for="tag in blog.tags" :key="tag.tagId">
@@ -57,76 +57,78 @@
             </el-popover>
           </div> -->
         <el-table
-          :data="blog.blogFilesNew"
-          :border="true"
-          style="width: 99.99%"
-        >
+            v-if="blog.blogFilesNew && blog.blogFilesNew.length>0"
+            :data="blog.blogFilesNew"
+            :border="true"
+            style="width: 99.99%">
           <el-table-column
-            align="center"
-            min-width="30%"
-            prop="remark"
-            label="附件"
-          >
+              align="center"
+              min-width="30%"
+              prop="remark"
+              label="附件">
             <template v-slot="scope">
               <el-row>
                 <el-col :span="6"
-                  ><div class="blogFilesInfoName">名称：</div></el-col
+                >
+                  <div class="blogFilesInfoName">名称：</div>
+                </el-col
                 >
                 <el-col :span="18"
-                  ><el-input v-model:value="scope.row.fileOriginName" disabled
-                /></el-col>
+                >
+                  <el-input v-model:value="scope.row.fileOriginName" disabled
+                  />
+                </el-col>
               </el-row>
               <el-row style="margin-top: 4px">
-                <el-col :span="6"
-                  ><div class="blogFilesInfoName">大小：</div></el-col
-                >
-                <el-col :span="18"
-                  ><el-input v-model:value="scope.row.fileSize" disabled
-                /></el-col>
+                <el-col :span="6">
+                  <div class="blogFilesInfoName">大小：</div>
+                </el-col>
+                <el-col :span="18">
+                  <el-input v-model:value="scope.row.fileSize" disabled
+                  />
+                </el-col>
               </el-row>
               <el-row style="margin-top: 4px">
-                <el-col :span="6"
-                  ><div class="blogFilesInfoName">类型：</div></el-col
-                >
-                <el-col :span="18"
-                  ><el-input v-model:value="scope.row.fileSuffix" disabled
-                /></el-col>
+                <el-col :span="6">
+                  <div class="blogFilesInfoName">类型：</div>
+                </el-col>
+                <el-col :span="18">
+                  <el-input v-model:value="scope.row.fileSuffix" disabled/>
+                </el-col>
               </el-row>
             </template>
           </el-table-column>
           <el-table-column
-            align="center"
-            min-width="50%"
-            prop="remark"
-            label="备注"
-          >
+              align="center"
+              min-width="50%"
+              prop="remark"
+              label="备注">
             <template v-slot="scope">
               <el-input
-                v-model:value="scope.row.remark"
-                type="textarea"
-                :rows="6"
-                size="small"
-                disabled
-              />
+                  v-model:value="scope.row.remark"
+                  type="textarea"
+                  :rows="6"
+                  size="small"
+                  disabled/>
             </template>
           </el-table-column>
           <el-table-column align="center" min-width="20%" label="操作">
             <template v-slot="scope">
-              <el-button size="mini" plain @click="handleDownload(scope.row)"
-                >下载</el-button
-              >
+              <el-button plain @click="handleDownload(scope.row)">下载
+              </el-button>
             </template>
           </el-table-column>
         </el-table>
-        <div class="author">
-          <ul>
-            <li>作者 {{ blog.createBy }}</li>
-            <li>发表时间 {{ blog.createTime }}</li>
-          </ul>
-        </div>
+<!--        <div class="author">-->
+<!--          <ul>-->
+<!--            <li>作者 {{ blog.createBy }}</li>-->
+<!--            <li>发表时间 {{ blog.createTime }}</li>-->
+<!--          </ul>-->
+<!--        </div>-->
+        <!--评论-->
         <el-card shadow="never" class="comments">
-          <div class="header" style="padding-bottom: 10px">评论</div>
-          <comment></comment>
+          <!--          <div class="header" style="padding-bottom: 10px">评论</div>-->
+          <!--          <IpComment></IpComment>-->
         </el-card>
       </el-card>
     </el-col>
@@ -135,7 +137,7 @@
     <!-- 设置底部距离的 -->
     <el-backtop :bottom="60">
       <div
-        style="
+          style="
            {
             height: 50px;
             width: 50px;
@@ -146,101 +148,97 @@
             border-radius: 2px;
             color: #1989fa;
           }
-        "
-      >
-        <svg-icon icon-class="top" />
+        ">
+        <svg-icon icon-class="top"/>
       </div>
     </el-backtop>
   </el-row>
 </template>
 
-<script>
-import comment from './comment/Ipcomment'
-import { getBlogDetail, addBlogViews } from '@/api/cms/blog'
+<script setup>
 
-export default {
-  components: {
-    comment,
-  },
-  data() {
-    return {
-      blog: {},
-      commentForm: {
-        content: '',
-      },
+import {getBlogDetail, addBlogViews} from '@/api/cms/blog'
+import {watch} from "vue";
+import IpComment from "@/views/cms/components/comment/Ipcomment";
+
+
+const router = useRouter();
+
+const blog = ref({})
+const commentForm = ref({
+  content: '',
+},)
+
+watch(() => router, (to, from) => router.go(0))
+
+
+async function getBlogInformation() {
+  // 增加阅读量
+  addBlogViews(router.currentRoute.value.query.id)
+  //获取详情
+  getBlogDetail(router.currentRoute.value.query.id).then((response) => {
+    const {data: res} = response
+    blog.value = response.data
+    blog.value.blogFilesNew = []
+    if (response.data.blogFiles !== null) {
+      blog.value.blogFilesNew = JSON.parse(response.data.blogFiles)
     }
-  },
-  watch: {
-    $route(to, from) {
-      this.$router.go(0)
-    },
-  },
-  created() {
-    this.getBlogInfomation()
-  },
-  computed: {
-    ...mapState(['userInfo', 'administrator']),
-  },
-  methods: {
-    // 获取博客详情信息
-    async getBlogInfomation() {
-      // 增加阅读量
-      addBlogViews(this.$route.query.id)
-      getBlogDetail(this.$route.query.id).then((response) => {
-        const { data: res } = response
-        this.blog = response.data
-        this.blog.blogFilesNew = []
-        if (response.data.blogFiles !== null) {
-          this.blog.blogFilesNew = JSON.parse(response.data.blogFiles)
-        }
-      })
-    },
-    // 文件下载处理
-    handleDownload(row) {
-      var name = row.fileOriginName
-      var url = row.filePath
-      var suffix = url.substring(url.lastIndexOf('.'), url.length)
-      const a = document.createElement('a')
-      a.setAttribute('download', name)
-      a.setAttribute('target', '_blank')
-      a.setAttribute('href', process.env.VUE_APP_BASE_API + url)
-      a.click()
-    },
-  },
+  })
 }
+
+//下载处理
+function handleDownload(row) {
+  let name = row.fileOriginName;
+  let url = row.filePath
+  let suffix = url.substring(url.lastIndexOf('.'), url.length)
+  const a = document.createElement('a')
+  a.setAttribute('download', name)
+  a.setAttribute('target', '_blank')
+  a.setAttribute('href', import.meta.env.VITE_APP_BASE_API + url)
+  a.click()
+}
+
+getBlogInformation();
+
 </script>
 
 <style scoped>
 .el-card {
   width: 100%;
 }
-.el-popper /deep/ {
-  box-shadow: 0 2px 4px 0 rgb(34 36 38 / 12%);
-}
+
+/*.el-popper /deep/ {*/
+/*  box-shadow: 0 2px 4px 0 rgb(34 36 38 / 12%);*/
+/*}*/
+
 .first-card {
   border-radius: 10px 10px 10px 10px;
   position: relative;
   padding-bottom: 10px;
   font: 300 1em/1.8 PingFang SC, Lantinghei SC, Microsoft Yahei,
-    Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, sans-serif;
+  Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, sans-serif;
 }
+
 hr.style-one {
   width: 100%;
   background-image: linear-gradient(
-    to right,
-    rgba(64, 158, 255, 0),
-    rgba(64, 158, 255, 0.75),
-    rgba(64, 158, 255, 0)
+      to right,
+      rgba(64, 158, 255, 0),
+      rgba(64, 158, 255, 0.75),
+      rgba(64, 158, 255, 0)
   );
 }
+
 .appreciate {
   text-align: center;
 }
+
 .tags {
   display: flex;
   align-items: center;
   margin-left: 50px;
 }
+
 .tag-item {
   display: flex;
   justify-content: space-around;
@@ -248,6 +246,7 @@ hr.style-one {
   margin-left: 10px;
   margin-bottom: 20px;
 }
+
 .tag {
   padding-left: 10px;
   padding-right: 10px;
@@ -257,6 +256,7 @@ hr.style-one {
   color: #409eff;
   display: flex;
 }
+
 .sjx-outer {
   width: 0;
   height: 0;
@@ -265,6 +265,7 @@ hr.style-one {
   border-right: 7px solid #409eff;
   position: relative;
 }
+
 .sjx-inner {
   border-top: 7px solid transparent;
   border-bottom: 7px solid transparent;
@@ -273,6 +274,7 @@ hr.style-one {
   left: 1px;
   position: absolute;
 }
+
 .author {
   text-align: left;
   background-color: #fcfff5;
@@ -285,8 +287,9 @@ hr.style-one {
   padding: 20px 0;
   font-size: small;
   font-family: PingFang SC, Lantinghei SC, Microsoft Yahei, Hiragino Sans GB,
-    Microsoft Sans Serif, WenQuanYi Micro Hei, sans-serif;
+  Microsoft Sans Serif, WenQuanYi Micro Hei, sans-serif;
 }
+
 .comments {
   margin-top: 150px;
   box-shadow: 0 1px 2px 0 rgb(34 36 38 / 15%);
@@ -294,54 +297,66 @@ hr.style-one {
   border-top: 2px solid #409eff;
   text-align: left;
 }
+
 .blog-title {
   text-align: center;
 }
+
 .blog-info {
   display: flex;
   align-items: center;
   color: rgba(0, 0, 0, 0.4);
   font-size: 13px;
 }
+
 .blog-date {
   margin-right: 5px;
   float: right;
 }
+
 .blog-views {
   margin-right: 5px;
   float: right;
 }
+
 .user-info {
   justify-content: space-around;
   align-items: center;
   margin-right: 15px;
   float: left;
 }
+
 .header {
   text-decoration: none;
   color: #3a8ee6;
   font-weight: bold;
 }
+
 @media screen and (max-width: 768px) {
   .tags {
     margin-left: 0;
   }
+
   hr {
     display: none;
   }
+
   .comment-content {
     font-size: 12px !important;
   }
 }
+
 @media only screen and (max-width: 480px) {
   h2 {
     font-weight: normal;
   }
+
   code,
   pre {
     font-size: 13px !important;
   }
 }
+
 .blogFilesInfoName {
   text-align: center;
   padding-top: 5px;

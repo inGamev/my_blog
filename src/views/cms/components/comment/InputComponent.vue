@@ -2,14 +2,14 @@
   <transition name="fade">
     <div class="input-wrapper" v-if="show">
       <el-input
-        class="gray-bg-input"
-        maxlength="100"
-        show-word-limit
-        v-model:value="inputComment"
-        type="textarea"
-        :rows="3"
-        @focus="inputFocus"
-        :placeholder="name"
+          class="gray-bg-input"
+          maxlength="100"
+          show-word-limit
+          v-model:value="inputComment"
+          type="textarea"
+          :rows="3"
+          @focus="inputFocus"
+          :placeholder="name"
       >
       </el-input>
       <!--enter-active-class="animated fadeInDown" leave-active-class="animated fadeOutUp"-->
@@ -17,7 +17,8 @@
         <div class="btn-control" v-show="controlShow">
           <span class="cancel" @click="cancel">取消</span>
           <el-button class="btn" type="success" round @click="commitComment"
-            >确定</el-button
+          >确定
+          </el-button
           >
         </div>
       </transition>
@@ -26,7 +27,8 @@
 </template>
 
 <script>
-import { $on, $off, $once, $emit } from '../../../../utils/gogocodeTransfer'
+import {$on, $off, $once, $emit} from '@/utils/gogocodeTransfer'
+
 export default {
   props: {
     //控制整个组件是否显示
@@ -52,7 +54,6 @@ export default {
       // default: 'comment'
     },
   },
-  components: {},
   data() {
     return {
       inputComment: '',
@@ -78,7 +79,7 @@ export default {
      * 提交评论
      */
     commitComment() {
-      $emit(this, 'confirm', { inputComment: this.inputComment, id: this.id })
+      $emit(this, 'confirm', {inputComment: this.inputComment, id: this.id})
       this.inputComment = ''
     },
 
@@ -118,12 +119,15 @@ export default {
 fade-leave-active {
   transition: opacity 0.5s;
 }
+
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
 }
+
 .input-wrapper {
   padding: 10px;
+
   .fade2-enter-active,
   fade2-leave-active {
     transition: opacity 0.5s;
@@ -133,24 +137,29 @@ fade-leave-active {
   .fade2-leave-to {
     opacity: 0;
   }
+
   .gray-bg-input,
   .el-input__inner {
     /*background-color: #67C23A;*/
   }
+
   .btn-control {
     display: flex;
     justify-content: flex-end;
     align-items: center;
     padding-top: 10px;
+
     .cancel {
       font-size: 16px;
       color: #606266;
       margin-right: 20px;
       cursor: pointer;
+
       &:hover {
         color: #333;
       }
     }
+
     .confirm {
       font-size: 16px;
     }

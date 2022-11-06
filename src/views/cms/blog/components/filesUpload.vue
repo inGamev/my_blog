@@ -1,25 +1,24 @@
 <template>
   <div class="component-upload-image">
     <el-upload
-      :disabled="disabled"
-      :action="uploadImgUrl"
-      list-type="picture-card"
-      :on-success="handleUploadSuccess"
-      :before-upload="handleBeforeUpload"
-      :limit="limit"
-      :on-error="handleUploadError"
-      name="file"
-      :on-remove="handleRemove"
-      :show-file-list="true"
-      :headers="headers"
-      :file-list="fileList"
-      :class="{ hide: this.fileList.length >= this.limit }"
-    >
+        :disabled="disabled"
+        :action="uploadImgUrl"
+        list-type="picture-card"
+        :on-success="handleUploadSuccess"
+        :before-upload="handleBeforeUpload"
+        :limit="limit"
+        :on-error="handleUploadError"
+        name="file"
+        :on-remove="handleRemove"
+        :show-file-list="true"
+        :headers="headers"
+        :file-list="fileList"
+        :class="{ hide: fileList.length >= limit }">
       <i class="el-icon-plus"></i>
     </el-upload>
 
     <!-- 上传提示 -->
-    <template v-slot:tip>
+    <template>
       <div class="el-upload__tip" v-if="showTip">
         请上传
         <template v-if="fileSize">
@@ -34,182 +33,174 @@
   </div>
 </template>
 
-<script>
-import { $on, $off, $once, $emit } from '../../../../utils/gogocodeTransfer'
-import { getToken } from '@/utils/auth'
+<script setup>
 
-export default {
-  props: {
-    value: [String, Object, Array],
-    // 大小限制(MB)
-    fileSize: {
-      type: Number,
-      default: 10,
-    },
-    // 文件类型, 例如['png', 'jpg', 'jpeg']
-    fileType: {
-      type: Array,
-      default: () => [
-        'doc',
-        'xls',
-        'ppt',
-        'pdf',
-        'png',
-        'jpg',
-        'jpeg',
-        'zip',
-        '7z',
-        'wps',
-      ],
-    },
-    // 是否显示提示
-    isShowTip: {
-      type: Boolean,
-      default: true,
-    },
-    // 是否不可编辑
-    disabled: {
-      type: Boolean,
-      default: false,
-    },
+import {getToken} from "@/utils/auth";
+import {computed, watch} from "vue";
+
+const props = defineProps({
+  modelValue: [String, Object, Array],
+  // 大小限制(MB)
+  fileSize: {
+    type: Number,
+    default: 10,
   },
-  data() {
-    return {
-      limit: 1,
-      hideUpload: false,
-      baseUrl: process.env.VUE_APP_BASE_API,
-      uploadImgUrl: process.env.VUE_APP_BASE_API + '/common/upload', // 上传的图片服务器地址
-      headers: {
-        Authorization: 'Bearer ' + getToken(),
-      },
-      fileList: [],
-    }
+  // 文件类型, 例如['png', 'jpg', 'jpeg']
+  fileType: {
+    type: Array,
+    default: () => [
+      'doc',
+      'xls',
+      'ppt',
+      'pdf',
+      'png',
+      'jpg',
+      'jpeg',
+      'zip',
+      '7z',
+      'wps',
+    ],
   },
-  watch: {
-    value: {
-      handler(val) {
-        if (val) {
-          // 首先将值转为数组
-          const list = Array.isArray(val) ? val : this.value.split(',')
-          // 然后将数组转为对象数组
-          this.fileList = list.map((item) => {
-            if (typeof item === 'string') {
-              if (item.indexOf(this.baseUrl) === -1) {
-                item = { name: this.baseUrl + item, url: '/file.png' }
-              } else {
-                item = { name: item, url: item }
-              }
-            }
-            return item
-          })
+  // 是否显示提示
+  isShowTip: {
+    type: Boolean,
+    default: true,
+  },
+  // 是否不可编辑
+  disabled: {
+    type: Boolean,
+    default: false,
+  },
+})
+const {proxy} = getCurrentInstance();
+const emit = defineEmits(['update:value', 'handleFilesSuccess'])
+
+const limit = ref(1)
+const hideUpload = ref(false)
+const baseUrl = import.meta.env.VUE_APP_BASE_API
+const uploadImgUrl = ref(import.meta.env.VUE_APP_BASE_API + '/common/upload')
+const headers = ref({
+  Authorization: 'Bearer ' + getToken(),
+})
+const fileList = ref([])
+watch(() => props.modelValue, val => {
+  if (val) {
+    // 首先将值转为数组
+    const list = Array.isArray(val) ? val : props.modelValue.split(',')
+    // 然后将数组转为对象数组
+    fileList.value = list.map((item) => {
+      if (typeof item === 'string') {
+        if (item.indexOf(baseUrl) === -1) {
+          item = {name: baseUrl + item, url: '/file.png'}
         } else {
-          this.fileList = []
-          return []
+          item = {name: item, url: item}
         }
-      },
-      deep: true,
-      immediate: true,
-    },
-  },
-  computed: {
-    // 是否显示提示
-    showTip() {
-      return this.isShowTip && (this.fileType || this.fileSize)
-    },
-  },
-  methods: {
-    // 删除图片
-    handleRemove(file, fileList) {
-      const findex = this.fileList.map((f) => f.name).indexOf(file.name)
-      if (findex > -1) {
-        this.fileList.splice(findex, 1)
-        $emit(this, 'update:value', this.listToString(this.fileList))
       }
-    },
-    // 上传成功回调
-    handleUploadSuccess(res) {
-      this.fileList.push({ name: res.fileName, url: res.fileName })
-      $emit(this, 'update:value', this.listToString(this.fileList))
-      const fileInfo = {
-        fileId: this.listToString(this.fileList),
-        fileOriginName: res.fileOriginName,
-        fileSuffix: res.fileSuffix,
-        fileSize: res.fileSize,
-        filePath: res.fileName,
-      }
-      $emit(this, 'handleFilesSuccess', fileInfo)
-      this.loading.close()
-    },
-    // 上传前loading加载
-    handleBeforeUpload(file) {
-      let isImg = false
-      if (this.fileType.length) {
-        let fileExtension = ''
-        if (file.name.lastIndexOf('.') > -1) {
-          fileExtension = file.name.slice(file.name.lastIndexOf('.') + 1)
-        }
-        isImg = this.fileType.some((type) => {
-          if (file.type.indexOf(type) > -1) return true
-          if (fileExtension && fileExtension.indexOf(type) > -1) return true
-          return false
-        })
-      } else {
-        isImg = file.type.indexOf('image') > -1
-      }
+      return item
+    })
+  } else {
+    fileList.value = []
+    return []
+  }
+}, {deep: true, immediate: true})
 
-      if (!isImg) {
-        this.$message.error(
-          `文件格式不正确, 请上传${this.fileType.join('/')}格式文件!`
-        )
-        return false
-      }
-      if (this.fileSize) {
-        const isLt = file.size / 1024 / 1024 < this.fileSize
-        if (!isLt) {
-          this.$message.error(`上传文件大小不能超过 ${this.fileSize} MB!`)
-          return false
-        }
-      }
-      this.loading = this.$loading({
-        lock: true,
-        text: '上传中',
-        background: 'rgba(0, 0, 0, 0.7)',
-      })
-    },
-    // 上传失败
-    handleUploadError() {
-      this.$message({
-        type: 'error',
-        message: '上传失败',
-      })
-      this.loading.close()
-    },
-    // 对象转成指定字符串分隔
-    listToString(list, separator) {
-      let strs = ''
-      separator = separator || ','
-      for (let i in list) {
-        strs += list[i].url.replace(this.baseUrl, '') + separator
-      }
-      return strs != '' ? strs.substr(0, strs.length - 1) : ''
-    },
-  },
-  emits: ['update:value', 'handleFilesSuccess'],
+
+const showTip = computed(() => {
+  return props.isShowTip && (props.fileType || props.fileSize)
+})
+
+// 删除图片
+function handleRemove(file, fileList) {
+  const findex = fileList.value.map((f) => f.name).indexOf(file.name)
+  if (findex > -1) {
+    fileList.value.splice(findex, 1)
+    emit('update:value', listToString(fileList.value))
+  }
 }
+
+// 上传成功回调
+function handleUploadSuccess(res) {
+  fileList.value.push({name: res.fileName, url: res.fileName})
+  emit('update:value', listToString(fileList.value))
+  const fileInfo = {
+    fileId: listToString(fileList.value),
+    fileOriginName: res.fileOriginName,
+    fileSuffix: res.fileSuffix,
+    fileSize: res.fileSize,
+    filePath: res.fileName,
+  }
+  emit('handleFilesSuccess', fileInfo)
+  proxy.$modal.closeLoading();
+}
+
+// 上传前loading加载
+function handleBeforeUpload(file) {
+  let isImg = false
+  if (props.fileType.length) {
+    let fileExtension = ''
+    if (file.name.lastIndexOf('.') > -1) {
+      fileExtension = file.name.slice(file.name.lastIndexOf('.') + 1)
+    }
+    isImg = props.fileType.some((type) => {
+      if (file.type.indexOf(type) > -1) return true
+      if (fileExtension && fileExtension.indexOf(type) > -1) return true
+      return false
+    })
+  } else {
+    isImg = file.type.indexOf('image') > -1
+  }
+
+  if (!isImg) {
+    proxy.$modal.msgError(
+        `文件格式不正确, 请上传${props.fileType.join('/')}格式文件!`
+    )
+    return false
+  }
+  if (props.fileSize) {
+    const isLt = file.size / 1024 / 1024 < props.fileSize
+    if (!isLt) {
+      proxy.$modal.msgError(`上传文件大小不能超过 ${props.fileSize} MB!`)
+      return false
+    }
+  }
+  proxy.$modal.loading("正在上传文件，请稍候...");
+}
+
+// 上传失败
+function handleUploadError() {
+  proxy.$modal.msgError("上传文件失败");
+  proxy.$modal.closeLoading();
+}
+
+
+// 对象转成指定字符串分隔
+function listToString(list, separator) {
+  let strs = ''
+  separator = separator || ','
+  for (let i in list) {
+    strs += list[i].url.replace(baseUrl, '') + separator
+  }
+  return strs != '' ? strs.substr(0, strs.length - 1) : ''
+}
+
+
 </script>
 
 <style lang="scss" scoped>
 /*// .el-upload--picture-card 控制加号部分
 */
-::v-deep.hide .el-upload--picture-card {
+:deep( .el-upload--picture-card).hide {
   display: none;
-} /*// 去掉动画效果
+}
+
+/*// 去掉动画效果
 */
-::v-deep .el-list-enter-active,
-::v-deep .el-list-leave-active {
+:deep(.el-list-enter-active),
+:deep(.el-list-leave-active) {
   transition: all 0s;
 }
-::v-deep .el-list-enter,
+
+:deep(.el-list-enter),
 .el-list-leave-active {
   opacity: 0;
   transform: translateY(0);
