@@ -8,22 +8,19 @@
         label-width="68px">
       <el-form-item label="标签名称" prop="tagName">
         <el-input
-            v-model:value="queryParams.tagName"
+            v-model="queryParams.tagName"
             placeholder="请输入标签名称"
             clearable
-            size="small"
-            @keyup.enter="handleQuery"
-        />
+            @keyup.enter="handleQuery"  />
       </el-form-item>
       <el-form-item>
         <el-button
             type="primary"
-            icon="el-icon-search"
-
+            icon="Search"
             @click="handleQuery"
         >搜索
         </el-button>
-        <el-button icon="el-icon-refresh" @click="resetQuery">重置</el-button>
+        <el-button icon="Refresh" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
 
@@ -32,8 +29,7 @@
         <el-button
             type="primary"
             plain
-            icon="el-icon-plus"
-
+            icon="Plus"
             @click="handleAdd"
             v-hasPermi="['cms:tag:add']"
         >新增
@@ -44,7 +40,7 @@
         <el-button
             type="success"
             plain
-            icon="el-icon-edit"
+            icon="Edit"
 
             :disabled="single"
             @click="handleUpdate"
@@ -57,7 +53,7 @@
         <el-button
             type="danger"
             plain
-            icon="el-icon-delete"
+            icon="Delete"
 
             :disabled="multiple"
             @click="handleDelete"
@@ -70,7 +66,7 @@
         <el-button
             type="warning"
             plain
-            icon="el-icon-download"
+            icon="Download"
 
             @click="handleExport"
             v-hasPermi="['cms:tag:export']"
@@ -84,11 +80,7 @@
       ></right-toolbar>
     </el-row>
 
-    <el-table
-        v-loading="loading"
-        :data="tagList"
-        @selection-change="handleSelectionChange"
-    >
+    <el-table  v-loading="loading" :data="tagList"  @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center"/>
       <!-- <el-table-column label="标签ID" align="center" prop="tagId" /> -->
       <el-table-column label="标签名称" align="center" prop="tagName"/>
@@ -98,36 +90,29 @@
           label="创建时间"
           align="center"
           prop="createTime"
-          width="100"
-      >
-        <template #default="scope">
-          <span>{{
-              parseTime(scope.row.createTime, '{y}-{m}-{d} {h}:{i}:{s}')
-            }}</span>
+          width="100" >
+        <template v-slot="scope">
+          <span>
+            {{ parseTime(scope.row.createTime, '{y}-{m}-{d} {h}:{i}:{s}') }}
+          </span>
         </template>
       </el-table-column>
       <el-table-column
           label="操作"
           align="center"
-          class-name="small-padding fixed-width"
-      >
+          class-name="small-padding fixed-width">
         <template v-slot="scope">
           <el-button
-
               type="text"
-              icon="el-icon-edit"
+              icon="Edit"
               @click="handleUpdate(scope.row)"
-              v-hasPermi="['cms:tag:edit']"
-          >修改
-          </el-button
-          >
+              v-hasPermi="['cms:tag:edit']">修改
+          </el-button>
           <el-button
-
               type="text"
-              icon="el-icon-delete"
+              icon="Delete"
               @click="handleDelete(scope.row)"
-              v-hasPermi="['cms:tag:remove']"
-          >删除
+              v-hasPermi="['cms:tag:remove']">删除
           </el-button>
         </template>
       </el-table-column>
@@ -138,19 +123,18 @@
         :total="total"
         v-model:page="queryParams.pageNum"
         v-model:limit="queryParams.pageSize"
-        @pagination="getList"
-    />
+        @pagination="getList"/>
 
     <!-- 添加或修改标签管理对话框 -->
     <el-dialog
         :title="title"
-        v-model:visible="open"
+        v-model="open"
         width="500px"
-        append-to-body
-    >
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+        :before-close="cancel"
+        append-to-body>
+      <el-form ref="tagForm" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="标签名称" prop="tagName">
-          <el-input v-model:value="form.tagName" placeholder="请输入标签名称"/>
+          <el-input v-model="form.tagName" placeholder="请输入标签名称"/>
         </el-form-item>
       </el-form>
       <template v-slot:footer>
@@ -165,10 +149,11 @@
 
 <script setup>
 import {listTag, getTag, delTag, addTag, updateTag} from '@/api/cms/tag'
+import {getCurrentInstance, ref} from "vue";
 
 const {proxy} = getCurrentInstance();
 
-const loading = ref(true)
+const loading = ref(false)
 const ids = ref([])
 const names = ref([])
 const single = ref(true)
@@ -195,9 +180,9 @@ const rules = {
 function getList() {
   loading.value = true
   listTag(queryParams.value).then((response) => {
-    tagList.vlaue = response.rows
-    total.vlaue = response.total
-    loading.vlaue = false
+    tagList.value = response.rows
+    total.value = response.total
+    loading.value = false
   })
 }
 
@@ -217,7 +202,7 @@ function reset() {
     updateTime: null,
     tagName: null,
   }
-  proxy.resetForm('form')
+  proxy.resetForm('tagForm')
 }
 
 /** 搜索按钮操作 */
@@ -236,8 +221,8 @@ function resetQuery() {
 function handleSelectionChange(selection) {
   ids.value = selection.map((item) => item.tagId)
   names.value = selection.map((item) => item.tagName)
-  this.single = selection.length !== 1
-  this.multiple = !selection.length
+  single.value = selection.length !== 1
+  multiple.value = !selection.length
 }
 
 /** 新增按钮操作 */
@@ -260,7 +245,7 @@ function handleUpdate(row) {
 
 /** 提交按钮 */
 function submitForm() {
-  proxy.$refs['form'].validate((valid) => {
+  proxy.$refs['tagForm'].validate((valid) => {
     if (valid) {
       if (form.value.tagId != null) {
         updateTag(form.value).then((response) => {

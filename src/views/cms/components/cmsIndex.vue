@@ -293,7 +293,7 @@ function picSrc(blogList) {
   for (let i = 0; i < blogList.length; i++) {
     let blogInfo = blogList[i]
     if (blogInfo.blogPic.length > 0) {
-      blogList[i].blogPic = import.meta.env.VUE_APP_BASE_API + blogInfo.blogPic
+      blogList[i].blogPic = import.meta.env.VITE_APP_BASE_API + blogInfo.blogPic
     } else {
       blogList[i].blogPic = '/errorImg.jpg'
     }
@@ -336,7 +336,7 @@ async function getTypeList() {
       let typeInfo = response.types[i]
       if (typeInfo.typePic.length > 0) {
         response.types[i].typePic =
-            import.meta.env.VUE_APP_BASE_API + typeInfo.typePic
+            import.meta.env.VITE_APP_BASE_API + typeInfo.typePic
       }
     }
     const {data: res} = response

@@ -9,28 +9,25 @@
         style="padding-left: 20px">
       <el-form-item label="留言者" prop="content" v-if="isAdmin">
         <el-input
-            v-model:value="queryParams.createBy"
+            v-model="queryParams.createBy"
             placeholder="请输入留言者"
             clearable
-            size="small"
             @keyup.enter="handleQuery"/>
       </el-form-item>
       <el-form-item label="留言内容" prop="content">
         <el-input
-            v-model:value="queryParams.content"
+            v-model="queryParams.content"
             placeholder="请输入留言内容"
             clearable
-            size="small"
-            @keyup.enter="handleQuery"
-        />
+            @keyup.enter="handleQuery"/>
       </el-form-item>
       <el-form-item>
         <el-button
             type="primary"
-            icon="el-icon-search"
+            icon="Search"
             @click="handleQuery">搜索
         </el-button>
-        <el-button icon="el-icon-refresh" @click="resetQuery">重置</el-button>
+        <el-button icon="Refresh" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
 
@@ -39,7 +36,7 @@
           <el-button
             type="primary"
             plain
-            icon="el-icon-plus"
+            icon="Plus"
 
             @click="handleAdd"
             v-hasPermi="['cms:message:add']"
@@ -49,7 +46,7 @@
           <el-button
             type="success"
             plain
-            icon="el-icon-edit"
+            icon="Edit"
 
             :disabled="single"
             @click="handleUpdate"
@@ -60,7 +57,7 @@
           <el-button
             type="danger"
             plain
-            icon="el-icon-delete"
+            icon="Delete"
 
             :disabled="multiple"
             @click="handleDelete"
@@ -71,7 +68,7 @@
           <el-button
             type="warning"
             plain
-            icon="el-icon-download"
+            icon="Download"
 
             @click="handleExport"
             v-hasPermi="['cms:message:export']"
@@ -94,14 +91,14 @@
             <el-button
 
               type="text"
-              icon="el-icon-edit"
+              icon="Edit"
               @click="handleUpdate(scope.row)"
               v-hasPermi="['cms:message:edit']"
             >修改</el-button>
             <el-button
 
               type="text"
-              icon="el-icon-delete"
+              icon="Delete"
               @click="handleDelete(scope.row)"
               v-hasPermi="['cms:message:remove']"
             >删除</el-button>
@@ -151,14 +148,11 @@
                 <el-button
                     type="text"
                     @click="handleAdd(mes)"
-                    v-hasPermi="['cms:message:add']"
-                >回复
-                </el-button
-                >
+                    v-hasPermi="['cms:message:add']" >回复
+                </el-button >
                 <span
                     v-show="!isAdmin && mes.createBy != userStore.name"
-                    style="margin-right: 39.43px"
-                ></span>
+                    style="margin-right: 39.43px" ></span>
                 <span v-show="!(!isAdmin && mes.createBy != userStore.name)"> | </span>
                 <span
                     v-show="!(!isAdmin && mes.createBy != userStore.name)"
@@ -181,25 +175,24 @@
     <!-- 添加或修改留言管理对话框 -->
     <el-dialog
         :title="title"
-        v-model:visible="open"
+        v-model="open"
         width="500px"
         append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+      <el-form ref="msgBackform" :model="form" :rules="rules" label-width="80px">
         <!-- <el-form-item label="父留言id" prop="parentId">
             <el-input v-model="form.parentId" placeholder="请输入父留言id" />
           </el-form-item>
           <el-form-item label="点赞数量" prop="likeNum">
             <el-input v-model="form.likeNum" placeholder="请输入点赞数量" />
           </el-form-item> -->
-        <!-- <el-form-item label="内容" prop="content"> -->
-        <el-input
-            v-model:value="form.content"
+<!--         <el-form-item  prop="content">-->
+          <el-input
+            v-model="form.content"
             type="textarea"
             maxlength="100"
             show-word-limit
-            :placeholder="toName"
-        />
-        <!-- </el-form-item> -->
+            :placeholder="toName" />
+<!--         </el-form-item>-->
         <!-- <el-form-item label="被留言者id，可以是人、项目、资源" prop="blogId">
             <el-input v-model="form.blogId" placeholder="请输入被留言者id，可以是人、项目、资源" />
           </el-form-item>
@@ -217,7 +210,7 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import {
   listMessage,
   getMessage,
@@ -226,7 +219,8 @@ import {
   updateMessage,
 } from '@/api/cms/message'
 import useUserStore from "@/store/modules/user";
-import {nextTick, onMounted} from "vue";
+import {getCurrentInstance, nextTick, onMounted, ref} from "vue";
+import {useRouter} from "vue-router";
 
 const {proxy} = getCurrentInstance();
 const userStore = useUserStore()
@@ -261,7 +255,7 @@ const isAdmin = ref(false)
 
 onMounted(
     nextTick(() => {
-      // 仅在整个视图都被渲染之后才会运行的代码
+      //仅在整个视图都被渲染之后才会运行的代码
       getList()
       isAdminRole()
     })
@@ -274,14 +268,12 @@ function getList() {
     for (let i = 0; i < response.rows.length; i++) {
       let mesInfo = response.rows[i]
       if (mesInfo.avatar != null && mesInfo.avatar != '') {
-        response.rows[i].avatar = import.meta.env.VUE_APP_BASE_API + mesInfo.avatar
+        response.rows[i].avatar = import.meta.env.VITE_APP_BASE_API + mesInfo.avatar
       }
     }
     messageList.value = response.rows
     total.value = response.total
-    setTimeout(() => {
-      proxy.$modal.closeLoading()
-    }, 100)
+  proxy.$modal.closeLoading()
   })
 }
 
@@ -307,7 +299,7 @@ function reset() {
     updateBy: null,
     updateTime: null,
   }
-  proxy.resetForm('form')
+  proxy.resetForm('msgBackform')
 }
 
 
@@ -361,7 +353,7 @@ function handleUpdate(row) {
 
 /** 提交按钮 */
 function submitForm() {
-  proxy.$refs['form'].validate((valid) => {
+  proxy.$refs['msgBackform'].validate((valid) => {
     if (valid) {
       if (form.value.id != null) {
         updateMessage(form.value).then((response) => {

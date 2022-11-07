@@ -1,7 +1,7 @@
 <template>
   <el-header :style="'margin-bottom:' + headerBottom + 'px'">
     <h2 class="logo">
-<!--      <svg-icon icon-class="EarOfWheat"/>-->
+      <!--      <svg-icon icon-class="EarOfWheat"/>-->
       inGamev
     </h2>
 
@@ -36,7 +36,7 @@
           background-color="rgba(84,92,100,0.5)"
           text-color="#fff"
           active-text-color="#ffd04b">
-        <el-menu-item index="/cms/main/cmsIndex" @click="menuAway">首页 </el-menu-item>
+        <el-menu-item index="/cms/main/cmsIndex" @click="menuAway">首页</el-menu-item>
         <el-menu-item
             :index="item.path"
             v-for="item in menuList"
@@ -49,7 +49,9 @@
 
 
     <div class="menu-expend" @click="menuExpend">
-      <el-icon style="color: rgba(255, 255, 255)"><Menu /></el-icon>
+      <el-icon style="color: rgba(255, 255, 255)">
+        <Menu/>
+      </el-icon>
     </div>
 
     <div v-if="searchInput" class="search_input">
@@ -58,7 +60,7 @@
           @blur="notSearching()"
           class="search"
           placeholder="搜索博客"
-          prefix-icon="el-icon-search"
+          prefix-icon="Search"
           v-model="queryInfo.queryKey">
       </el-input>
       <ul v-if="searching">
@@ -71,32 +73,32 @@
       </ul>
     </div>
 
-<!--    <div v-if="isLogin" class="bg-purple">-->
-<!--      <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">-->
-<!--        <div class="avatar-wrapper">-->
-<!--          <el-avatar class="user-avatar" :src="userStore.avatar" @error="errorHandler">-->
-<!--            <i class="el-icon-s-custom"/>-->
-<!--          </el-avatar>-->
-<!--          <p class="avatar-Name">{{ userStore.name }}</p>-->
-<!--        </div>-->
-<!--        <template v-slot:dropdown>-->
-<!--          <el-dropdown-menu>-->
-<!--            <router-link target="_blank" to="/index">-->
-<!--              <el-dropdown-item>管理博客</el-dropdown-item>-->
-<!--            </router-link>-->
-<!--            <el-dropdown-item divided @click="logout">-->
-<!--              <span>退出登录</span>-->
-<!--            </el-dropdown-item>-->
-<!--          </el-dropdown-menu>-->
-<!--        </template>-->
-<!--      </el-dropdown>-->
-<!--    </div>-->
-<!--    &lt;!&ndash;开放登录注册&ndash;&gt;-->
-<!--    <div v-else class="bg-purple">-->
-<!--      <div class="avatar-wrapper">-->
-<!--        <p class="avatar-Name" @click.prevent="toLogin">登录 | 注册</p>-->
-<!--      </div>-->
-<!--    </div>-->
+    <!--    <div v-if="isLogin" class="bg-purple">-->
+    <!--      <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">-->
+    <!--        <div class="avatar-wrapper">-->
+    <!--          <el-avatar class="user-avatar" :src="userStore.avatar" @error="errorHandler">-->
+    <!--            <i class="el-icon-s-custom"/>-->
+    <!--          </el-avatar>-->
+    <!--          <p class="avatar-Name">{{ userStore.name }}</p>-->
+    <!--        </div>-->
+    <!--        <template v-slot:dropdown>-->
+    <!--          <el-dropdown-menu>-->
+    <!--            <router-link target="_blank" to="/index">-->
+    <!--              <el-dropdown-item>管理博客</el-dropdown-item>-->
+    <!--            </router-link>-->
+    <!--            <el-dropdown-item divided @click="logout">-->
+    <!--              <span>退出登录</span>-->
+    <!--            </el-dropdown-item>-->
+    <!--          </el-dropdown-menu>-->
+    <!--        </template>-->
+    <!--      </el-dropdown>-->
+    <!--    </div>-->
+    <!--    &lt;!&ndash;开放登录注册&ndash;&gt;-->
+    <!--    <div v-else class="bg-purple">-->
+    <!--      <div class="avatar-wrapper">-->
+    <!--        <p class="avatar-Name" @click.prevent="toLogin">登录 | 注册</p>-->
+    <!--      </div>-->
+    <!--    </div>-->
   </el-header>
 </template>
 
@@ -126,7 +128,7 @@ const searching = ref(false)
 const menuList = [
   {
     id: 1,
-    menuName: '随笔',
+    menuName: '时间轴',
     path: '/cms/main/essay',
     icon: 'el-icon-edit',
   },

@@ -12,7 +12,6 @@
             v-model="queryParams.createBy"
             placeholder="请输入评论者"
             clearable
-            size="small"
             @keyup.enter="handleQuery"
         />
       </el-form-item>
@@ -21,17 +20,16 @@
             v-model="queryParams.content"
             placeholder="请输入评论内容"
             clearable
-            size="small"
             @keyup.enter="handleQuery"
         />
       </el-form-item>
       <el-form-item>
         <el-button
             type="primary"
-            icon="el-icon-search"
+            icon="Search"
             @click="handleQuery">搜索
         </el-button>
-        <el-button icon="el-icon-refresh" @click="resetQuery">重置</el-button>
+        <el-button icon="Refresh" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
 
@@ -40,7 +38,7 @@
           <el-button
             type="primary"
             plain
-            icon="el-icon-plus"
+            icon="Plus"
 
             @click="handleAdd"
             v-hasPermi="['cms:comment:add']"
@@ -50,7 +48,7 @@
           <el-button
             type="success"
             plain
-            icon="el-icon-edit"
+            icon="Edit"
 
             :disabled="single"
             @click="handleUpdate"
@@ -61,7 +59,7 @@
           <el-button
             type="danger"
             plain
-            icon="el-icon-delete"
+            icon="Delete"
 
             :disabled="multiple"
             @click="handleDelete"
@@ -72,7 +70,7 @@
           <el-button
             type="warning"
             plain
-            icon="el-icon-download"
+            icon="Download"
 
             @click="handleExport"
             v-hasPermi="['cms:comment:export']"
@@ -96,14 +94,14 @@
             <el-button
 
               type="text"
-              icon="el-icon-edit"
+              icon="Edit"
               @click="handleUpdate(scope.row)"
               v-hasPermi="['cms:comment:edit']"
             >修改</el-button>
             <el-button
 
               type="text"
-              icon="el-icon-delete"
+              icon="Delete"
               @click="handleDelete(scope.row)"
               v-hasPermi="['cms:comment:remove']"
             >删除</el-button>
@@ -189,11 +187,11 @@
     <!-- 添加或修改评论管理对话框 -->
     <el-dialog
         :title="title"
-        v-model:visible="open"
+        v-model="open"
         width="500px"
         append-to-body
     >
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+      <el-form ref="comBackForm" :model="form" :rules="rules" label-width="80px">
         <!-- <el-form-item label="父评论id" prop="parentId">
             <el-input v-model="form.parentId" placeholder="请输入父评论id" />
           </el-form-item>
@@ -205,7 +203,7 @@
           </el-form-item> -->
         <!-- <el-form-item label="内容" prop="content"> -->
         <el-input
-            v-model:value="form.content"
+            v-model="form.content"
             type="textarea"
             maxlength="100"
             show-word-limit
@@ -301,7 +299,7 @@ function getList() {
       let mesInfo = response.rows[i]
       if (mesInfo.avatar != null && mesInfo.avatar != '') {
         response.rows[i].avatar =
-            import.meta.env.VUE_APP_BASE_API + mesInfo.avatar
+            import.meta.env.VITE_APP_BASE_API + mesInfo.avatar
       }
     }
     commentList.value = response.rows
@@ -334,7 +332,7 @@ function reset() {
     updateBy: null,
     updateTime: null,
   }
-  proxy.resetForm('form')
+  proxy.resetForm('comBackForm')
 }
 
 /** 搜索按钮操作 */
@@ -388,7 +386,7 @@ function handleUpdate(row) {
 
 /** 提交按钮 */
 function submitForm() {
-  proxy.$refs['form'].validate((valid) => {
+  proxy.$refs['comBackForm'].validate((valid) => {
     if (valid) {
       if (form.value.valueid != null) {
         updateComment(form.value).then((response) => {

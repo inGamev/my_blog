@@ -8,19 +8,17 @@
         label-width="68px">
       <el-form-item label="标题" prop="title">
         <el-input
-            v-model:value="queryParams.title"
+            v-model="queryParams.title"
             placeholder="请输入标题"
             clearable
-            size="small"
             @keyup.enter="handleQuery"
         />
       </el-form-item>
       <el-form-item label="状态" prop="status">
         <el-select
-            v-model:value="queryParams.status"
+            v-model="queryParams.status"
             placeholder="请选择状态"
             clearable
-            size="small"
         >
           <el-option
               v-for="dict in cms_blog_status"
@@ -31,18 +29,8 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button
-            type="primary"
-            icon="el-icon-search"
-
-            @click="handleQuery"
-        >搜索
-        </el-button
-        >
-        <el-button icon="el-icon-refresh" @click="resetQuery"
-        >重置
-        </el-button
-        >
+        <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
+        <el-button icon="Refresh" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
 
@@ -51,7 +39,7 @@
         <el-button
             type="primary"
             plain
-            icon="el-icon-plus"
+            icon="Plus"
             @click="handleAdd"
             v-hasPermi="['cms:blog:add']"
         >新增
@@ -62,8 +50,7 @@
         <el-button
             type="success"
             plain
-            icon="el-icon-edit"
-
+            icon="Edit"
             :disabled="single"
             @click="handleUpdate"
             v-hasPermi="['cms:blog:edit']"
@@ -75,39 +62,30 @@
         <el-button
             type="danger"
             plain
-            icon="el-icon-delete"
-
+            icon="Delete"
             :disabled="multiple"
             @click="handleDelete"
-            v-hasPermi="['cms:blog:remove']"
-        >删除
-        </el-button
-        >
+            v-hasPermi="['cms:blog:remove']">删除
+        </el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
             type="warning"
             plain
-            icon="el-icon-download"
-
+            icon="Download"
             @click="handleExport"
             v-hasPermi="['cms:blog:export']"
         >导出
-        </el-button
-        >
+        </el-button>
       </el-col>
-      <right-toolbar
-          v-model:showSearch="showSearch"
-          @queryTable="getList"
-      ></right-toolbar>
+      <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
     <el-table
         v-loading="loading"
         :data="blogList"
         @selection-change="handleSelectionChange"
-        :row-class-name="tableRowClassName"
-    >
+        :row-class-name="tableRowClassName">
       <el-table-column type="selection" width="55" align="center"/>
       <!-- <el-table-column label="ID" align="center" prop="id" /> -->
       <el-table-column label="首图预览" align="center" prop="blogPic">
@@ -140,7 +118,6 @@
         <template v-slot="scope">
           <el-tag
               effect="plain"
-
               v-for="tag in scope.row.tags"
               :key="tag.tagId"
               type="success">
@@ -174,45 +151,36 @@
       <el-table-column
           label="操作"
           align="center"
-          class-name="small-padding fixed-width"
-      >
+          class-name="small-padding fixed-width">
         <template v-slot="scope">
           <el-button
-
               type="text"
-              icon="el-icon-edit"
+              icon="Edit"
               @click="handleUpdate(scope.row)"
               v-hasPermi="['cms:blog:edit']"
           >修改
-          </el-button
-          >
+          </el-button>
           <el-button
-
               type="text"
-              icon="el-icon-delete"
+              icon="Delete"
               @click="handleDelete(scope.row)"
               v-hasPermi="['cms:blog:remove']"
           >删除
-          </el-button
-          >
+          </el-button>
           <el-button
-
               type="text"
-              icon="el-icon-folder-opened"
+              icon="FolderOpened"
               @click="blogFiles(scope.row)"
               v-hasPermi="['cms:blog:edit']"
           >附件管理
-          </el-button
-          >
+          </el-button>
           <el-button
-
               type="text"
-              icon="el-icon-folder-opened"
+              icon="FolderOpened"
               @click="fileList(scope.row)"
               v-hasPermi="['cms:blog:edit']"
           >资源列表
-          </el-button
-          >
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -226,28 +194,22 @@
     />
 
     <!-- 添加或修改文章管理对话框 -->
-    <el-dialog
-        :title="title"
-        v-model="open"
-        :before-close="cancel"
-        width="1200px"
-        append-to-body
-    >
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+    <el-dialog :title="title" v-model="open" :before-close="cancel" width="1200px" append-to-body>
+      <el-form ref="essayFormRef" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="标题" prop="title">
-          <el-input v-model:value="form.title" placeholder="请输入标题"/>
+          <el-input v-model="form.title" placeholder="请输入标题"/>
         </el-form-item>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="首图">
-              <imageUpload v-model:value="form.blogPic" :limit="1"/>
+            <el-form-item label="首图" prop="blogPic">
+              <imageUpload v-model="form.blogPic" :limit="1"/>
             </el-form-item>
           </el-col>
           <el-col :span="16">
-            <el-form-item label="简介">
+            <el-form-item label="简介" prop="blogDesc">
               <el-input
                   type="textarea"
-                  v-model:value="form.blogDesc"
+                  v-model="form.blogDesc"
                   :autosize="{ minRows: 7, maxRows: 7 }"
                   maxlength="50"
                   show-word-limit
@@ -256,50 +218,44 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-form-item label="内容">
+        <el-form-item label="内容" prop="content">
           <!-- 图片用base64存储,url方式移动端会显示异常 -->
-          <cmsEditor
-              v-model:value="form.content"
-              @getFileId="getFileId"
-              type="base64"
-              :min-height="192"
-          />
+          <div v-if="open">
+            <vue-editor v-model:content="form.content" @getFileId="getFileId"/>
+          </div>
         </el-form-item>
-        <el-form-item label="标签">
-          <el-checkbox-group v-model:value="form.tagIds">
+        <el-form-item label="标签" prop="tagIds">
+          <el-checkbox-group v-model="form.tagIds">
             <el-checkbox
                 v-for="item in tagOptions"
                 :label="item.tagId"
                 :key="item.tagId"
-                :value="item.tagId"
-            >
+                :value="item.tagId">
               {{ item.tagName }}
             </el-checkbox>
           </el-checkbox-group>
         </el-form-item>
         <el-row>
           <el-col :span="7">
-            <el-form-item label="分类">
+            <el-form-item label="分类" prop="typeIds">
               <el-select
-                  v-model:value="form.typeIds"
+                  v-model="form.typeIds"
                   multiple
                   placeholder="请选择"
                   filterable
-                  clearable
-              >
+                  clearable>
                 <el-option
                     v-for="item in typeOptions"
                     :key="item.typeId"
                     :label="item.typeName"
-                    :value="item.typeId"
-                >
+                    :value="item.typeId">
                 </el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="17">
-            <el-form-item label="置顶">
-              <el-checkbox v-model:value="top"></el-checkbox>
+            <el-form-item label="置顶" prop="top">
+              <el-checkbox v-model="top"></el-checkbox>
             </el-form-item>
           </el-col>
         </el-row>
@@ -314,11 +270,7 @@
     </el-dialog>
 
     <!-- 资源列表对话框 -->
-    <el-dialog
-        :title="title"
-        v-model="fileListOpen"
-        width="1000px"
-        append-to-body>
+    <el-dialog :title="title" v-model="fileListOpen" width="1000px" append-to-body>
       <el-table class="file-list" :data="fileInfoList">
         <el-table-column type="selection" width="55" align="center"/>
         <!-- <el-table-column label="文件主键id" align="center" prop="fileId" /> -->
@@ -335,8 +287,7 @@
         <el-table-column
             label="文件名称"
             align="center"
-            prop="fileOriginName"
-        />
+            prop="fileOriginName"/>
         <el-table-column label="文件类型" align="center" prop="fileSuffix"/>
         <el-table-column label="文件大小" align="center" prop="fileSizeInfo"/>
         <!-- <el-table-column label="存储文件名称" align="center" prop="fileObjectName" /> -->
@@ -355,7 +306,7 @@
           <template v-slot="scope">
             <el-button
                 type="text"
-                icon="el-icon-download"
+                icon="Download"
                 @click="handleDownload(scope.row)">下载
             </el-button>
           </template>
@@ -371,17 +322,14 @@
         width="1200px"
         append-to-body>
       <el-form
-          ref="form"
+          ref="essayFormRef"
           :model="form"
           :rules="rules"
           label-position="top"
           label-width="80px">
         <el-form-item>
           <el-row>
-            <el-button type="primary" @click="addFiles"
-            >添加文件
-            </el-button
-            >
+            <el-button type="primary" @click="addFiles">添加文件</el-button>
             <el-table
                 :data="form.blogFilesNew"
                 :border="true"
@@ -392,11 +340,11 @@
                   prop="pic"
                   label="附件">
                 <template v-slot="scope">
-                  <!--                  <filesUpload-->
-                  <!--                      v-model="scope.row.fileId"-->
-                  <!--                      @handleFilesSuccess="filesSuccess"-->
-                  <!--                      :is-show-tip="false"-->
-                  <!--                  />-->
+                  <filesUpload
+                      v-model="scope.row.fileId"
+                      @handleFilesSuccess="filesSuccess"
+                      :is-show-tip="false"
+                  />
                 </template>
               </el-table-column>
               <el-table-column
@@ -410,7 +358,7 @@
                       <div class="blogFilesInfoName">名称：</div>
                     </el-col>
                     <el-col :span="18">
-                      <el-input v-model:value="scope.row.fileOriginName" disabled/>
+                      <el-input v-model="scope.row.fileOriginName" disabled/>
                     </el-col>
                   </el-row>
                   <el-row style="margin-top: 4px">
@@ -418,7 +366,7 @@
                       <div class="blogFilesInfoName">大小：</div>
                     </el-col>
                     <el-col :span="18">
-                      <el-input v-model:value="scope.row.fileSize" disabled/>
+                      <el-input v-model="scope.row.fileSize" disabled/>
                     </el-col>
                   </el-row>
                   <el-row style="margin-top: 4px">
@@ -426,7 +374,7 @@
                       <div class="blogFilesInfoName">类型：</div>
                     </el-col>
                     <el-col :span="18">
-                      <el-input v-model:value="scope.row.fileSuffix" disabled/>
+                      <el-input v-model="scope.row.fileSuffix" disabled/>
                     </el-col>
                   </el-row>
                 </template>
@@ -438,7 +386,7 @@
                   label="备注">
                 <template v-slot="scope">
                   <el-input
-                      v-model:value="scope.row.remark"
+                      v-model="scope.row.remark"
                       type="textarea"
                       :rows="6"
                       size="small"
@@ -494,6 +442,7 @@ import {
   getFileList,
 } from '@/api/cms/fileBlogInfo'
 import {ref} from "vue";
+import VueEditor from "@/components/VueEditor";
 
 
 const {proxy} = getCurrentInstance();
@@ -545,9 +494,6 @@ const fileIds = ref([])
 const typeOptions = ref([])
 const tagOptions = ref([])
 
-// Maximum recursive updates exceeded in component <ElDialogContent>. This means you have a reactive effect that is mutating
-// its own dependencies and thus recursively triggering itself. Possible sources include component template, render function,
-// updated hook or watcher source function.
 /** 查询文章管理列表 */
 function getList() {
   loading.value = true
@@ -556,7 +502,7 @@ function getList() {
       let blogInfo = response.rows[i]
       if (blogInfo.blogPic.length > 0) {
         response.rows[i].blogPic =
-            import.meta.env.VUE_APP_BASE_API + blogInfo.blogPic
+            import.meta.env.VITE_APP_BASE_API + blogInfo.blogPic
       } else {
         response.rows[i].blogPic = '/errorImg.jpg'
       }
@@ -608,7 +554,7 @@ function reset() {
     typeIds: [],
     blogFilesNew: [],
   }
-  proxy.resetForm('form')
+  proxy.resetForm('essayFormRef')
 }
 
 /** 搜索按钮操作 */
@@ -653,6 +599,8 @@ function handleUpdate(row) {
     if (form.value.top == 1) {
       top.value = true
     }
+
+
     open.value = true
     title.value = '修改文章'
   })
@@ -660,7 +608,7 @@ function handleUpdate(row) {
 
 /** 发布按钮 */
 function releaseForm() {
-  proxy.$refs['form'].validate((valid) => {
+  proxy.$refs['essayFormRef'].validate((valid) => {
     if (valid) {
       form.value.type = 1
       form.value.status = 1
@@ -706,7 +654,7 @@ function releaseForm() {
 
 /** 暂存按钮 */
 function saveForm() {
-  proxy.$refs['form'].validate((valid) => {
+  proxy.$refs['essayFormRef'].validate((valid) => {
     if (valid) {
       form.value.type = 1
       form.value.status = 0
@@ -803,7 +751,7 @@ function fileList(row) {
         case 'bmp':
         case 'gif':
           response.data[i].pic =
-              import.meta.env.VUE_APP_BASE_API + fileInfo.filePath
+              import.meta.env.VITE_APP_BASE_API + fileInfo.filePath
           break
         default:
           response.data[i].pic = image.bg1
@@ -813,9 +761,7 @@ function fileList(row) {
     fileInfoList.value = response.data
     fileListOpen.value = true
     title.value = '资源列表'
-    setTimeout(() => {
-      proxy.$modal.closeLoading()
-    }, 100)
+    proxy.$modal.closeLoading()
   })
 }
 
@@ -932,7 +878,7 @@ function handleDownload(row) {
   const a = document.createElement('a')
   a.setAttribute('download', name)
   a.setAttribute('target', '_blank')
-  a.setAttribute('href', import.meta.env.VUE_APP_BASE_API + url)
+  a.setAttribute('href', import.meta.env.VITE_APP_BASE_API + url)
   a.click()
 }
 

@@ -37,12 +37,12 @@
           <el-form-item>
             <el-button
               type="primary"
-              icon="el-icon-search"
+              icon="Search"
 
               @click="handleQuery"
               >搜索</el-button
             >
-            <el-button icon="el-icon-refresh"  @click="resetQuery"
+            <el-button icon="Refresh"  @click="resetQuery"
               >重置</el-button
             >
           </el-form-item>
@@ -53,7 +53,7 @@
             <el-button
               type="primary"
               plain
-              icon="el-icon-plus"
+              icon="Plus"
 
               @click="handleAdd"
               v-hasPermi="['cms:blog:add']"
@@ -64,7 +64,7 @@
             <el-button
               type="success"
               plain
-              icon="el-icon-edit"
+              icon="Edit"
 
               :disabled="single"
               @click="handleUpdate"
@@ -76,7 +76,7 @@
             <el-button
               type="danger"
               plain
-              icon="el-icon-delete"
+              icon="Delete"
 
               :disabled="multiple"
               @click="handleDelete"
@@ -88,7 +88,7 @@
             <el-button
               type="warning"
               plain
-              icon="el-icon-download"
+              icon="Download"
 
               @click="handleExport"
               v-hasPermi="['cms:blog:export']"
@@ -142,7 +142,7 @@
               <el-button
 
                 type="text"
-                icon="el-icon-edit"
+                icon="Edit"
                 @click="handleUpdate(scope.row)"
                 v-hasPermi="['cms:blog:edit']"
                 >修改</el-button
@@ -150,7 +150,7 @@
               <el-button
 
                 type="text"
-                icon="el-icon-delete"
+                icon="Delete"
                 @click="handleDelete(scope.row)"
                 v-hasPermi="['cms:blog:remove']"
                 >删除</el-button
@@ -158,7 +158,7 @@
               <el-button
 
                 type="text"
-                icon="el-icon-folder-opened"
+                icon="FolderOpened"
                 @click="fileList(scope.row)"
                 v-hasPermi="['system:notice:query']"
                 >资源列表</el-button
@@ -256,7 +256,7 @@
             <el-button
 
               type="text"
-              icon="el-icon-download"
+              icon="Download"
               @click="handleDownload(scope.row)"
               >下载</el-button
             >
@@ -555,7 +555,7 @@ export default {
             case 'bmp':
             case 'gif':
               response.data[i].pic =
-                import.meta.env.VUE_APP_BASE_API + fileInfo.filePath
+                import.meta.env.VITE_APP_BASE_API + fileInfo.filePath
               break
             default:
               response.data[i].pic = image.bg1
@@ -578,7 +578,7 @@ export default {
       const a = document.createElement('a')
       a.setAttribute('download', name)
       a.setAttribute('target', '_blank')
-      a.setAttribute('href', import.meta.env.VUE_APP_BASE_API + url)
+      a.setAttribute('href', import.meta.env.VITE_APP_BASE_API + url)
       a.click()
     },
   },

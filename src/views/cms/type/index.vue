@@ -8,26 +8,18 @@
         label-width="68px">
       <el-form-item label="分类名称" prop="typeName">
         <el-input
-            v-model:value="queryParams.typeName"
+            v-model="queryParams.typeName"
             placeholder="请输入分类名称"
             clearable
-            size="small"
-            @keyup.enter="handleQuery"
-        />
+            @keyup.enter="handleQuery"/>
       </el-form-item>
       <el-form-item>
         <el-button
             type="primary"
-            icon="el-icon-search"
-
-            @click="handleQuery"
-        >搜索
-        </el-button
-        >
-        <el-button icon="el-icon-refresh" @click="resetQuery"
-        >重置
-        </el-button
-        >
+            icon="Search"
+            @click="handleQuery">搜索
+        </el-button>
+        <el-button icon="Refresh" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
 
@@ -36,8 +28,7 @@
         <el-button
             type="primary"
             plain
-            icon="el-icon-plus"
-
+            icon="Plus"
             @click="handleAdd"
             v-hasPermi="['cms:type:add']"
         >新增
@@ -45,24 +36,15 @@
         >
       </el-col>
       <el-col :span="1.5">
-        <el-button
-            type="success"
-            plain
-            icon="el-icon-edit"
-
-            :disabled="single"
-            @click="handleUpdate"
-            v-hasPermi="['cms:type:edit']"
-        >修改
-        </el-button
-        >
+        <el-button type="success" plain icon="Edit" :disabled="single" @click="handleUpdate"
+                   v-hasPermi="['cms:type:edit']">修改
+        </el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
             type="danger"
             plain
-            icon="el-icon-delete"
-
+            icon="Delete"
             :disabled="multiple"
             @click="handleDelete"
             v-hasPermi="['cms:type:remove']"
@@ -74,8 +56,7 @@
         <el-button
             type="warning"
             plain
-            icon="el-icon-download"
-
+            icon="Download"
             @click="handleExport"
             v-hasPermi="['cms:type:export']"
         >导出
@@ -105,12 +86,10 @@
               width: 28px;
               height: 28px;
               border-radius: 50%;
-              margin-right: 10px;
-            "
+              margin-right: 10px; "
               :src="scope.row.typePic"
               lazy
-              :preview-src-list="[scope.row.typePic]"
-          >
+              :preview-src-list="[scope.row.typePic]">
             <template v-slot:error>
               <div class="image-slot">
                 <i class="el-icon-collection"></i>
@@ -141,7 +120,7 @@
           <el-button
 
               type="text"
-              icon="el-icon-edit"
+              icon="Edit"
               @click="handleUpdate(scope.row)"
               v-hasPermi="['cms:type:edit']"
           >修改
@@ -150,12 +129,11 @@
           <el-button
 
               type="text"
-              icon="el-icon-delete"
+              icon="Delete"
               @click="handleDelete(scope.row)"
               v-hasPermi="['cms:type:remove']"
           >删除
-          </el-button
-          >
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -165,26 +143,16 @@
         :total="total"
         v-model:page="queryParams.pageNum"
         v-model:limit="queryParams.pageSize"
-        @pagination="getList"
-    />
+        @pagination="getList"/>
 
     <!-- 添加或修改分类管理对话框 -->
-    <el-dialog
-        :title="title"
-        v-model:visible="open"
-        :before-close="cancel"
-        width="500px"
-        append-to-body
-    >
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+    <el-dialog :title="title" v-model="open" :before-close="cancel" width="500px" append-to-body>
+      <el-form ref="typeform" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="分类名称" prop="typeName">
-          <el-input
-              v-model:value="form.typeName"
-              placeholder="请输入分类名称"
-          />
+          <el-input v-model="form.typeName" placeholder="请输入分类名称"/>
         </el-form-item>
-        <el-form-item label="分类图像">
-          <imageUpload v-model:value="form.typePic" :limit="1"/>
+        <el-form-item label="分类图像" prop="typePic">
+          <imageUpload v-model="form.typePic" :limit="1"/>
         </el-form-item>
       </el-form>
       <template v-slot:footer>
@@ -244,7 +212,7 @@ function getList() {
     for (let i = 0; i < response.rows.length; i++) {
       let typeInfo = response.rows[i]
       if (typeInfo.typePic.length > 0) {
-        response.rows[i].typePic = import.meta.env.VUE_APP_BASE_API + typeInfo.typePic
+        response.rows[i].typePic = import.meta.env.VITE_APP_BASE_API + typeInfo.typePic
       }
     }
     typeList.value = response.rows
@@ -270,7 +238,7 @@ function reset() {
     typeName: null,
     typePic: null,
   }
-  proxy.resetForm('form')
+  proxy.resetForm('typeform')
 }
 
 /** 搜索按钮操作 */
@@ -313,7 +281,7 @@ function handleUpdate(row) {
 
 /** 提交按钮 */
 function submitForm() {
-  proxy.$refs['form'].validate((valid) => {
+  proxy.$refs['typeform'].validate((valid) => {
     if (valid) {
       if (form.value.typeId != null) {
         updateType(form.value).then((response) => {

@@ -168,14 +168,14 @@ async function getMessageList() {
     for (let i = 0; i < response.rows.length; i++) {
       let mesInfo = response.rows[i]
       if (mesInfo.avatar != null && mesInfo.avatar != '') {
-        response.rows[i].avatar = import.meta.env.VUE_APP_BASE_API + mesInfo.avatar
+        response.rows[i].avatar = import.meta.env.VITE_APP_BASE_API + mesInfo.avatar
       }
       if (mesInfo.children != null && mesInfo.children != '') {
         for (let j = 0; j < response.rows[i].children.length; j++) {
           let children = response.rows[i].children
           if (children.avatar != null && children.avatar != '') {
             response.rows[i].children[j].avatar =
-                import.meta.env.VUE_APP_BASE_API + children.avatar
+                import.meta.env.VITE_APP_BASE_API + children.avatar
           }
         }
       }

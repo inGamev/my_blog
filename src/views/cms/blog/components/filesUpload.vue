@@ -77,8 +77,8 @@ const emit = defineEmits(['update:value', 'handleFilesSuccess'])
 
 const limit = ref(1)
 const hideUpload = ref(false)
-const baseUrl = import.meta.env.VUE_APP_BASE_API
-const uploadImgUrl = ref(import.meta.env.VUE_APP_BASE_API + '/common/upload')
+const baseUrl = import.meta.env.VITE_APP_BASE_API
+const uploadImgUrl = ref(import.meta.env.VITE_APP_BASE_API + '/common/upload')
 const headers = ref({
   Authorization: 'Bearer ' + getToken(),
 })

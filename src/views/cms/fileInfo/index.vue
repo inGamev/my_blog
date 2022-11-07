@@ -5,23 +5,20 @@
         ref="queryForm"
         :inline="true"
         v-show="showSearch"
-        label-width="68px"
-    >
+        label-width="68px" >
       <el-form-item label="文件名称" prop="fileOriginName">
         <el-input
-            v-model:value="queryParams.fileOriginName"
+            v-model="queryParams.fileOriginName"
             placeholder="请输入文件名称"
             clearable
-            size="small"
             @keyup.enter="handleQuery"
         />
       </el-form-item>
       <el-form-item label="文件类型" prop="fileSuffix">
         <el-input
-            v-model:value="queryParams.fileSuffix"
+            v-model="queryParams.fileSuffix"
             placeholder="请输入文件类型，例如txt"
             clearable
-            size="small"
             @keyup.enter="handleQuery"
         />
       </el-form-item>
@@ -30,16 +27,14 @@
             v-model="queryParams.fileSizeInfo"
             placeholder="请输入文件大小"
             clearable
-            size="small"
             @keyup.enter.native="handleQuery"
           />
         </el-form-item> -->
       <el-form-item label="存储名称" prop="fileObjectName">
         <el-input
-            v-model:value="queryParams.fileObjectName"
+            v-model="queryParams.fileObjectName"
             placeholder="请输入存储文件名称"
             clearable
-            size="small"
             @keyup.enter="handleQuery"
         />
       </el-form-item>
@@ -48,23 +43,16 @@
             v-model="queryParams.filePath"
             placeholder="请输入存储路径"
             clearable
-            size="small"
             @keyup.enter.native="handleQuery"
           />
         </el-form-item> -->
       <el-form-item>
         <el-button
             type="primary"
-            icon="el-icon-search"
-
-            @click="handleQuery"
-        >搜索
-        </el-button
-        >
-        <el-button icon="el-icon-refresh" @click="resetQuery"
-        >重置
-        </el-button
-        >
+            icon="Search"
+            @click="handleQuery">搜索
+        </el-button >
+        <el-button icon="Refresh" @click="resetQuery">重置</el-button >
       </el-form-item>
     </el-form>
 
@@ -73,7 +61,7 @@
           <el-button
             type="primary"
             plain
-            icon="el-icon-plus"
+            icon="Plus"
 
             @click="handleAdd"
             v-hasPermi="['cms:fileInfo:add']"
@@ -83,7 +71,7 @@
           <el-button
             type="success"
             plain
-            icon="el-icon-edit"
+            icon="Edit"
 
             :disabled="single"
             @click="handleUpdate"
@@ -94,32 +82,29 @@
         <el-button
             type="primary"
             plain
-            icon="el-icon-upload"
+            icon="Upload"
 
             @click="uploadFile"
             v-hasPermi="['cms:fileInfo:add']"
         >上传文件
-        </el-button
-        >
+        </el-button >
       </el-col>
       <el-col :span="1.5">
         <el-button
             type="danger"
             plain
-            icon="el-icon-delete"
-
+            icon="Delete"
             :disabled="multiple"
             @click="handleDelete"
             v-hasPermi="['cms:fileInfo:remove']"
         >删除
-        </el-button
-        >
+        </el-button  >
       </el-col>
       <!-- <el-col :span="1.5">
           <el-button
             type="warning"
             plain
-            icon="el-icon-download"
+            icon="Download"
 
             @click="handleExport"
             v-hasPermi="['cms:fileInfo:export']"
@@ -135,17 +120,18 @@
         v-loading="loading"
         :data="fileInfoList"
         @selection-change="handleSelectionChange"
+        append-to-body
     >
+
       <el-table-column type="selection" width="55" align="center"/>
       <!-- <el-table-column label="文件主键id" align="center" prop="fileId" /> -->
       <el-table-column label="图片预览" align="center" prop="pic">
         <template v-slot="scope">
           <el-image
-              style="width: 120px; height: 60px"
-              :src="scope.row.pic"
-              lazy
+              style="width: 120px; height: 60px;"
+              :src="scope.row.pic" lazy
               :preview-src-list="[scope.row.pic]"
-          >
+              preview-teleported>
           </el-image>
         </template>
       </el-table-column>
@@ -163,8 +149,7 @@
           label="创建时间"
           align="center"
           prop="createTime"
-          width="100"
-      >
+          width="100">
         <template v-slot="scope">
           <span>{{
               parseTime(scope.row.createTime, '{y}-{m}-{d} {h}:{i}:{s}')
@@ -174,33 +159,26 @@
       <el-table-column
           label="操作"
           align="center"
-          class-name="small-padding fixed-width"
-      >
+          class-name="small-padding fixed-width" >
         <template v-slot="scope">
           <!-- <el-button
 
               type="text"
-              icon="el-icon-edit"
+              icon="Edit"
               @click="handleUpdate(scope.row)"
               v-hasPermi="['cms:fileInfo:edit']"
             >修改</el-button> -->
           <el-button
-
               type="text"
-              icon="el-icon-download"
-              @click="handleDownload(scope.row)"
-          >下载
-          </el-button
-          >
+              icon="Download"
+              @click="handleDownload(scope.row)" >下载
+          </el-button  >
           <el-button
-
               type="text"
-              icon="el-icon-delete"
+              icon="Delete"
               @click="handleDelete(scope.row)"
-              v-hasPermi="['cms:fileInfo:remove']"
-          >删除
-          </el-button
-          >
+              v-hasPermi="['cms:fileInfo:remove']" >删除
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -242,7 +220,7 @@
       </el-dialog> -->
     <el-dialog
         :title="title"
-        v-model:visible="open"
+        v-model="open"
         width="500px"
         append-to-body>
       <el-upload
@@ -278,7 +256,7 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import {
   listFileInfo,
   getFileInfo,
@@ -287,232 +265,218 @@ import {
   updateFileInfo,
 } from '@/api/cms/fileInfo'
 import {getToken} from '@/utils/auth'
-import image from './image.js'
-import store from '@/store'
+import image from './image'
+import {getCurrentInstance, ref} from "vue";
+import useUserStore from "@/store/modules/user";
+import {useRouter} from "vue-router";
 
-export default {
-  name: 'FileInfo',
-  data() {
-    return {
-      // 遮罩层
-      loading: true,
-      // 选中数组
-      ids: [],
-      fileNames: [],
-      // 非单个禁用
-      single: true,
-      // 非多个禁用
-      multiple: true,
-      // 显示搜索条件
-      showSearch: true,
-      // 总条数
-      total: 0,
-      // 文件管理表格数据
-      fileInfoList: [],
-      // 弹出层标题
-      title: '',
-      // 是否显示弹出层
-      open: false,
-      // 上传参数
-      upload: {
-        // 是否禁用上传
-        isUploading: false,
-        // 设置上传的请求头部
-        headers: {Authorization: 'Bearer ' + getToken()},
-        // 上传的地址
-        url: import.meta.env.VUE_APP_BASE_API + '/common/upload',
-        // 上传的文件列表
-        fileList: [],
-      },
-      // 查询参数
-      queryParams: {
-        pageNum: 1,
-        pageSize: 10,
-        fileOriginName: null,
-        fileSuffix: null,
-        fileSizeInfo: null,
-        fileObjectName: null,
-        filePath: null,
-        createBy: store.getters.name,
-      },
-      // 表单参数
-      form: {},
-      // 表单校验
-      rules: {
-        fileOriginName: [
-          {required: true, message: '文件名称不能为空', trigger: 'blur'},
-        ],
-        delFlag: [
-          {
-            required: true,
-            message: '是否删除：Y-被删除，N-未删除不能为空',
-            trigger: 'blur',
-          },
-        ],
-      },
-    }
-  },
-  created() {
-    this.getList()
-  },
-  methods: {
-    // 文件下载处理
-    handleDownload(row) {
-      var name = row.fileOriginName
-      var url = row.filePath
-      var suffix = url.substring(url.lastIndexOf('.'), url.length)
-      const a = document.createElement('a')
-      a.setAttribute('download', name)
-      a.setAttribute('target', '_blank')
-      a.setAttribute('href', import.meta.env.VUE_APP_BASE_API + url)
-      a.click()
+const {proxy} = getCurrentInstance();
+const userStore = useUserStore()
+const router = useRouter();
+
+const loading = ref(true)
+const ids = ref([])
+const fileNames = ref([])
+const single = ref(true)
+const multiple = ref(true)
+const showSearch = ref(true)
+const total = ref(0)
+const fileInfoList = ref([])
+const title = ref('')
+const open = ref(false)
+const queryParams = ref({
+  pageNum: 1,
+  pageSize: 10,
+  fileOriginName: null,
+  fileSuffix: null,
+  fileSizeInfo: null,
+  fileObjectName: null,
+  filePath: null,
+  createBy: userStore.name,
+})
+const upload = ref({
+  // 是否禁用上传
+  isUploading: false,
+  // 设置上传的请求头部
+  headers: {Authorization: 'Bearer ' + getToken()},
+  // 上传的地址
+  url: import.meta.env.VITE_APP_BASE_API + '/common/upload',
+  // 上传的文件列表
+  fileList: [],
+})
+const form = ref({})
+const rules = {
+  fileOriginName: [
+    {required: true, message: '文件名称不能为空', trigger: 'blur'},
+  ],
+  delFlag: [
+    {
+      required: true,
+      message: '是否删除：Y-被删除，N-未删除不能为空',
+      trigger: 'blur',
     },
-    /** 查询文件管理列表 */
-    getList() {
-      this.loading = true
-      listFileInfo(this.queryParams).then((response) => {
-        for (let i = 0; i < response.rows.length; i++) {
-          let fileInfo = response.rows[i]
-          switch (fileInfo.fileSuffix) {
-            case 'png':
-            case 'jpg':
-            case 'jpeg':
-            case 'bmp':
-            case 'gif':
-              response.rows[i].pic =
-                  import.meta.env.VUE_APP_BASE_API + fileInfo.filePath
-              break
-            default:
-              response.rows[i].pic = image.bg1
-              break
-          }
-        }
-        this.fileInfoList = response.rows
-        this.total = response.total
-        this.loading = false
-      })
-    },
-    // 取消按钮
-    cancel() {
-      this.open = false
-      this.reset()
-    },
-    // 表单重置
-    reset() {
-      this.form = {
-        fileId: null,
-        fileOriginName: null,
-        fileSuffix: null,
-        fileSizeInfo: null,
-        fileObjectName: null,
-        filePath: null,
-        delFlag: null,
-        createBy: store.getters.name,
-        createTime: null,
-        updateBy: null,
-        updateTime: null,
-      }
-      this.resetForm('form')
-    },
-    /** 搜索按钮操作 */
-    handleQuery() {
-      this.queryParams.pageNum = 1
-      this.getList()
-    },
-    /** 重置按钮操作 */
-    resetQuery() {
-      this.resetForm('queryForm')
-      this.handleQuery()
-    },
-    // 多选框选中数据
-    handleSelectionChange(selection) {
-      this.ids = selection.map((item) => item.fileId)
-      this.fileNames = selection.map((item) => item.fileOriginName)
-      this.single = selection.length !== 1
-      this.multiple = !selection.length
-    },
-    /** 上传文件按钮操作 */
-    uploadFile() {
-      this.reset()
-      this.open = true
-      this.title = '添加文件'
-    },
-    // 文件提交处理
-    submitUpload() {
-      this.$refs.upload.submit()
-    },
-    // 文件上传中处理
-    handleFileUploadProgress(event, file, fileList) {
-      this.upload.isUploading = true
-    },
-    // 文件上传成功处理
-    handleFileSuccess(response, file, fileList) {
-      this.upload.isUploading = false
-      this.form.filePath = response.url
-      this.msgSuccess(response.msg)
-    },
-    /** 新增按钮操作 */
-    handleAdd() {
-      this.reset()
-      this.open = true
-      this.title = '添加文件管理'
-    },
-    /** 修改按钮操作 */
-    handleUpdate(row) {
-      this.reset()
-      const fileId = row.fileId || this.ids
-      getFileInfo(fileId).then((response) => {
-        this.form = response.data
-        this.open = true
-        this.title = '修改文件管理'
-      })
-    },
-    /** 提交按钮 */
-    submitForm() {
-      this.$refs['form'].validate((valid) => {
-        if (valid) {
-          if (this.form.fileId != null) {
-            updateFileInfo(this.form).then((response) => {
-              this.$modal.msgSuccess('修改成功')
-              this.open = false
-              this.getList()
-            })
-          } else {
-            addFileInfo(this.form).then((response) => {
-              this.$modal.msgSuccess('新增成功')
-              this.open = false
-              this.getList()
-            })
-          }
-        }
-      })
-    },
-    /** 删除按钮操作 */
-    handleDelete(row) {
-      const fileIds = row.fileId || this.ids
-      let fileOriginName = row.fileOriginName || this.fileNames
-      this.$modal
-          .confirm('是否确认删除文件名称为"' + fileOriginName + '"的数据项？')
-          .then(function () {
-            return delFileInfo(fileIds)
-          })
-          .then(() => {
-            this.getList()
-            this.$modal.msgSuccess('删除成功')
-          })
-          .catch(() => {
-          })
-    },
-    /** 导出按钮操作 */
-    handleExport() {
-      proxy.download(
-          'cms/fileInfo/export',
-          {
-            ...this.queryParams,
-          },
-          `fileInfo_${new Date().getTime()}.xlsx`
-      )
-    },
-  },
+  ],
 }
+
+// 文件下载处理
+function handleDownload(row) {
+  var name = row.fileOriginName
+  var url = row.filePath
+  var suffix = url.substring(url.lastIndexOf('.'), url.length)
+  const a = document.createElement('a')
+  a.setAttribute('download', name)
+  a.setAttribute('target', '_blank')
+  a.setAttribute('href', import.meta.env.VITE_APP_BASE_API + url)
+  a.click()
+}
+/** 查询文件管理列表 */
+function getList() {
+  loading.value = true
+  listFileInfo(queryParams.value).then((response) => {
+    for (let i = 0; i < response.rows.length; i++) {
+      let fileInfo = response.rows[i]
+      switch (fileInfo.fileSuffix) {
+        case 'png':
+        case 'jpg':
+        case 'jpeg':
+        case 'bmp':
+        case 'gif':
+          response.rows[i].pic =
+              import.meta.env.VITE_APP_BASE_API + fileInfo.filePath
+          break
+        default:
+          response.rows[i].pic = image.bg1
+          break
+      }
+    }
+    fileInfoList.value = response.rows
+    total.value = response.total
+    loading.value = false
+  })
+}
+// 取消按钮
+function cancel() {
+  open.value = false
+  reset()
+}
+// 表单重置
+function reset() {
+  form.value = {
+    fileId: null,
+    fileOriginName: null,
+    fileSuffix: null,
+    fileSizeInfo: null,
+    fileObjectName: null,
+    filePath: null,
+    delFlag: null,
+    createBy: userStore.name,
+    createTime: null,
+    updateBy: null,
+    updateTime: null,
+  }
+  proxy.resetForm('form')
+}
+/** 搜索按钮操作 */
+function handleQuery() {
+  queryParams.value.pageNum = 1
+  getList()
+}
+/** 重置按钮操作 */
+function resetQuery() {
+  proxy.resetForm('queryForm')
+  handleQuery()
+}
+// 多选框选中数据
+function handleSelectionChange(selection) {
+  ids.value = selection.map((item) => item.fileId)
+  fileNames.value = selection.map((item) => item.fileOriginName)
+  single.value = selection.length !== 1
+  multiple.value = !selection.length
+}
+/** 上传文件按钮操作 */
+function uploadFile() {
+  reset()
+  open.value = true
+  title.value = '添加文件'
+}
+// 文件提交处理
+function submitUpload() {
+  proxy.$refs.upload.submit()
+}
+// 文件上传中处理
+function handleFileUploadProgress(event, file, fileList) {
+  upload.value.isUploading = true
+}
+// 文件上传成功处理
+function handleFileSuccess(response, file, fileList) {
+  upload.value.isUploading = false
+  form.value.filePath = response.url
+  proxy.$modal.msgSuccess(response.msg)
+}
+/** 新增按钮操作 */
+function handleAdd() {
+  reset()
+  open.value = true
+  title.value = '添加文件管理'
+}
+/** 修改按钮操作 */
+function handleUpdate(row) {
+  reset()
+  const fileId = row.fileId || ids.value
+  getFileInfo(fileId).then((response) => {
+    form.value = response.data
+    open.value = true
+    title.value = '修改文件管理'
+  })
+}
+/** 提交按钮 */
+function submitForm() {
+  proxy.$refs['form'].validate((valid) => {
+    if (valid) {
+      if (form.value.fileId != null) {
+        updateFileInfo(form.value).then((response) => {
+          proxy.$modal.msgSuccess('修改成功')
+          open.value = false
+          getList()
+        })
+      } else {
+        addFileInfo(form.value).then((response) => {
+          proxy.$modal.msgSuccess('新增成功')
+          open.value = false
+          getList()
+        })
+      }
+    }
+  })
+}
+/** 删除按钮操作 */
+function handleDelete(row) {
+  const fileIds = row.fileId || ids.value
+  let fileOriginName = row.fileOriginName || fileNames.value
+  proxy.$modal
+      .confirm('是否确认删除文件名称为"' + fileOriginName + '"的数据项？')
+      .then(function () {
+        return delFileInfo(fileIds)
+      })
+      .then(() => {
+        getList()
+        proxy.$modal.msgSuccess('删除成功')
+      })
+      .catch(() => {
+      })
+}
+/** 导出按钮操作 */
+function handleExport() {
+  proxy.download(
+      'cms/fileInfo/export',
+      {
+        ...queryParams.value,
+      },
+      `fileInfo_${new Date().getTime()}.xlsx`
+  )
+}
+
+getList()
+
+
 </script>

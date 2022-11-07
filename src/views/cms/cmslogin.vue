@@ -76,8 +76,8 @@ const router = useRouter();
 const {proxy} = getCurrentInstance();
 
 const loginForm = ref({
-  username: "admin",
-  password: "admin123",
+  username: "",
+  password: "",
   rememberMe: false,
   code: "",
   uuid: ""
@@ -94,7 +94,7 @@ const loading = ref(false);
 // 验证码开关
 const captchaEnabled = ref(true);
 // 注册开关
-const register = ref(true);
+const register = ref(false);
 const redirect = ref("");
 
 function handleLogin() {
