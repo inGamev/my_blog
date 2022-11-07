@@ -15,7 +15,7 @@
 
 <script setup>
 import variables from '@/assets/styles/variables.module.scss'
-import logo from '@/assets/logo/logo.png'
+import logo from '@/assets/logo/vite.svg'
 import useSettingsStore from '@/store/modules/settings'
 
 defineProps({
@@ -25,7 +25,7 @@ defineProps({
   }
 })
 
-const title = ref('若依管理系统');
+const title = ref('inGamev');
 const settingsStore = useSettingsStore();
 const sideTheme = computed(() => settingsStore.sideTheme);
 </script>

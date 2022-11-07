@@ -275,7 +275,7 @@ import {
   delFileBlogInfo,
   getFileList,
 } from '@/api/cms/fileBlogInfo'
-import { ELLoading as Loading } from 'element-plus'
+// import { ELLoading as Loading } from 'element-plus'
 
 export default {
   name: 'Blog',
@@ -540,9 +540,9 @@ export default {
     },
     /** 资源列表按钮操作 */
     fileList(row) {
-      let loadingInstance = Loading.service({
-        target: '.file-list',
-      })
+      // let loadingInstance = Loading.service({
+      //   target: '.file-list',
+      // })
       this.reset()
       const blogId = row.id || this.ids
       getFileList(blogId).then((response) => {
@@ -566,7 +566,7 @@ export default {
         this.fileListOpen = true
         this.title = '资源列表'
         setTimeout(() => {
-          loadingInstance.close()
+          // loadingInstance.close()
         }, 100)
       })
     },
