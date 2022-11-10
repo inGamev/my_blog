@@ -7,16 +7,20 @@
           class="first-card">
         <template #header>
           <div class="total blog-info">
-<!--            <div class="user-info">-->
-<!--              <el-icon><User /></el-icon>-->
-<!--              <span class="header"> {{ blog.createBy }}</span>-->
-<!--            </div>-->
+            <!--            <div class="user-info">-->
+            <!--              <el-icon><User /></el-icon>-->
+            <!--              <span class="header"> {{ blog.createBy }}</span>-->
+            <!--            </div>-->
             <div class="blog-date">
-              <el-icon><Calendar /></el-icon>
+              <el-icon>
+                <Calendar/>
+              </el-icon>
               <span> {{ blog.createTime }}</span>
             </div>
             <div class="blog-views">
-              <el-icon><View /></el-icon>
+              <el-icon>
+                <View/>
+              </el-icon>
               <span> {{ blog.views }}</span>
             </div>
           </div>
@@ -24,18 +28,19 @@
         <h2 class="blog-title header">
           {{ blog.title }}
           <el-tag
-
               v-for="tag in blog.types"
               :key="tag.typeId"
-              type="info"
-          >{{ tag.typeName }}
-          </el-tag
-          >
+              type="info">
+            {{ tag.typeName }}
+          </el-tag>
         </h2>
-        <div
-            class="typo m-padded-lr-responsive m-padded-tb-large ql-editor"
-            v-html="blog.content"
-        ></div>
+        <!--                <div-->
+        <!--                    class="typo m-padded-lr-responsive m-padded-tb-large ql-editor"-->
+        <!--                    v-html="blog.content"-->
+        <!--                ></div>-->
+        <div>
+          <VueRichText :content="blog.content"></VueRichText>
+        </div>
         <div class="tags">
           <div class="tag-item" v-for="tag in blog.tags" :key="tag.tagId">
             <div class="sjx-outer">
@@ -119,12 +124,12 @@
             </template>
           </el-table-column>
         </el-table>
-<!--        <div class="author">-->
-<!--          <ul>-->
-<!--            <li>作者 {{ blog.createBy }}</li>-->
-<!--            <li>发表时间 {{ blog.createTime }}</li>-->
-<!--          </ul>-->
-<!--        </div>-->
+        <!--        <div class="author">-->
+        <!--          <ul>-->
+        <!--            <li>作者 {{ blog.createBy }}</li>-->
+        <!--            <li>发表时间 {{ blog.createTime }}</li>-->
+        <!--          </ul>-->
+        <!--        </div>-->
         <!--评论-->
         <el-card shadow="never" class="comments">
           <!--          <div class="header" style="padding-bottom: 10px">评论</div>-->
@@ -160,6 +165,7 @@
 import {getBlogDetail, addBlogViews} from '@/api/cms/blog'
 import {watch} from "vue";
 import IpComment from "@/views/cms/components/comment/Ipcomment";
+import VueRichText from "@/components/VueRichText";
 
 
 const router = useRouter();
@@ -236,7 +242,8 @@ hr.style-one {
 .tags {
   display: flex;
   align-items: center;
-  margin-left: 50px;
+  margin-top: 20px;
+  margin-left: 10px;
 }
 
 .tag-item {

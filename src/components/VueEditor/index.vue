@@ -21,6 +21,7 @@
         contentType="html"
         :options="options"
     />
+    <!--文本改变时触发-->
     <!--    @update:content="onContentChange($event)"-->
   </div>
 
@@ -95,9 +96,10 @@ const options = reactive({
         ['link', 'image', 'video'], // 链接、图片、视频
       ],
       handlers: {
+        // 重写图片上传事件
         image: function (value) {
           if (value) {
-            // 调用element图片上传
+            //调用图片上传
             proxy.$refs.uploadRef.click()
           } else {
             Quill.format("image", true);
@@ -129,8 +131,7 @@ function handleBeforeUpload(file) {
   }
   return true
 }
-
-
+// 上传成功处理
 function handleUploadSuccess(res, file) {
   // 如果上传成功
   if (res.code == 200) {
@@ -149,7 +150,7 @@ function handleUploadSuccess(res, file) {
   }
 
 }
-
+// 上传失败处理
 function handleUploadError() {
   proxy.$modal.msgError('图片插入失败')
 }
